@@ -145,7 +145,6 @@ export const Response = ({ message, status, data, unit, onClick }) => {
               <Table className="text-sm">
                 <TableHeader>
                   <TableRow>
-                    {/* <th>ID</th> */}
                     <TableHead>DateTime</TableHead>
                     <TableHead>Severity</TableHead>
                     <TableHead>Event</TableHead>
@@ -154,7 +153,6 @@ export const Response = ({ message, status, data, unit, onClick }) => {
                 <TableBody>
                   {data["sel"].map((item) => (
                     <TableRow key={item.ID}>
-                      {/* <td>{item.ID}</td> */}
                       <TableCell>{formatDateTime(item.DateTime)}</TableCell>
                       <TableCell
                         style={{

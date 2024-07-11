@@ -79,6 +79,9 @@ export default function RootLayout({ children }) {
                   <PiSignOut className="h-4 w-4" />
                   <span className="text-xl">Go back to monitor</span>
                 </Link>
+                <p className="text-[10px]">
+                  If any, David will fix it once he comes back
+                </p>
               </div>
             </div>
           </div>
