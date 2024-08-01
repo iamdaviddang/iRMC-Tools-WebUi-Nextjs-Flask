@@ -39,8 +39,7 @@ export const Response = ({ message, status, data, unit, onClick }) => {
     <div className="w-max">
       <Alert variant={status === "ok" ? "success" : "destructive"}>
         <AlertTitle className="text-xl font-semibold flex items-center gap-1">
-          {/* {status === "bad" ? <MdError alt="error" /> : <MdDone alt="done" />}
-          Status: {status} */}
+          {status === "bad" ? <strong>{unit}</strong> : null}
         </AlertTitle>
         <AlertDescription className="text-xl font-bold flex flex-col">
           {message}
@@ -83,6 +82,10 @@ export const Response = ({ message, status, data, unit, onClick }) => {
             </p>
             <p>
               iRMC Password: <strong>{data["unit"]["iRMC-Password"]}</strong>
+            </p>
+            <Separator />
+            <p>
+              UUID: <strong>{data["unit"]["UUID"]}</strong>
             </p>
           </div>
         ) : null}

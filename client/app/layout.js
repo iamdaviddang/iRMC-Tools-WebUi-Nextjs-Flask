@@ -9,6 +9,18 @@ import Image from "next/image";
 import { GoCommandPalette } from "react-icons/go";
 import { PiSignOut } from "react-icons/pi";
 import { Toaster } from "@/components/ui/sonner";
+import { MdOutlineReport } from "react-icons/md";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+  DialogClose,
+} from "@/components/ui/dialog";
+import { ReportForm } from "@/components/ReportForm";
+import ReportAlert from "@/components/ReportAlert";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -68,6 +80,14 @@ export default function RootLayout({ children }) {
                     <GoCommandPalette className="h-4 w-4" />
                     <span className="text-xl">Commands</span>
                   </Link>
+                  {/* <Link
+                    href="/report"
+                    className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary"
+                    prefetch={false}
+                  >
+                    <MdOutlineReport className="h-4 w-4" />
+                    <span className="text-xl">Report</span>
+                  </Link> */}
                 </nav>
               </div>
               <div className="mt-auto p-4">
@@ -77,11 +97,10 @@ export default function RootLayout({ children }) {
                   prefetch={false}
                 >
                   <PiSignOut className="h-4 w-4" />
-                  <span className="text-xl">Go back to monitor</span>
+                  <span className="text-xl font-semibold">
+                    Go back to monitor
+                  </span>
                 </Link>
-                <p className="text-[10px]">
-                  If any, David will fix it once he comes back
-                </p>
               </div>
             </div>
           </div>
@@ -145,6 +164,18 @@ export default function RootLayout({ children }) {
                   </div>
                 </SheetContent>
               </Sheet>
+              <div className="w-full h-full flex items-center justify-end gap-3">
+                <Link
+                  href="https://172.25.32.5/mediawiki/Main_Page"
+                  className="mx-[-0.65rem] flex items-center rounded-xl px-3 py-2 text-muted-foreground hover:underline hover:decoration-primary text-[20px] font-semibold"
+                  prefetch={false}
+                  target="_blank"
+                >
+                  <span className="text-primary ">W</span>
+                  iki
+                </Link>
+                <ReportAlert />
+              </div>
             </header>
             <main className="">{children}</main>
           </div>

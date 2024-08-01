@@ -20,9 +20,9 @@ def rebootOrPowerOn():
     
     userInput = user_data['userData']
     
-    if userInput.startswith(("EWCF", "EWAB", "EWAA")):
-        addNewTask(userInput, "SD Card Check", "bad")
-        return jsonify({"message":"ERROR: Sorry but this model is not supported. Please insert iRMC IP instead.", "status":"bad"})
+    if userInput.startswith(("EWCF", "EWAB", "EWAA", "EWBS")):
+        addNewTask(userInput, "Reboot/PowerON", "bad")
+        return jsonify({"message":"ERROR: Sorry, Tool is not able to find MAC in SFCS for this model. Please insert iRMC IP instead.", "status":"bad"})
     
     irmc_ip = ""
     if userInput.startswith("172.25."):
@@ -32,10 +32,22 @@ def rebootOrPowerOn():
         if len(userInput) != 10:
             addNewTask(userInput, "Reboot/PowerON", "bad")
             return jsonify({"message":"USN length is not correct! Please check it.", "status":"bad"})
-        irmc_ip = get_irmc_ip(userInput)["ip"]
+        try:
+            irmc_ip = get_irmc_ip(userInput)["ip"]
+        except:
+            addNewTask(userInput, "Reboot/PowerON", "bad")
+            return jsonify({"message":"Can not get the iRMC IP. Please check it manually.", "status":"bad"})
     else:
         addNewTask(userInput, "Reboot/PowerON", "bad")
         return jsonify({"message":"ERROR: Unknown input.", "status":"bad"})
+    
+    if not is_server_reachable(irmc_ip):
+        addNewTask(userInput, "Reboot/PowerON", "bad")
+        return jsonify({"message":f"ERROR: iRMC IP {irmc_ip} is not reachable. Please check it.", "status":"bad"})
+    
+    if not check_api_password(find_password(irmc_ip), irmc_ip):
+            addNewTask(userInput, "Reboot/PowerON", "bad")
+            return jsonify({"message":f"iRMC Password is not 'admin' or 'Password@123'. Please check it.", "status":"bad"})
         
     
     try:
@@ -57,9 +69,9 @@ def powerOff():
     
     userInput = user_data['userData']
     
-    if userInput.startswith(("EWCF", "EWAB", "EWAA")):
+    if userInput.startswith(("EWCF", "EWAB", "EWAA", "EWBS")):
         addNewTask(userInput, "SD Card Check", "bad")
-        return jsonify({"message":"ERROR: Sorry but this model is not supported. Please insert iRMC IP instead.", "status":"bad"})
+        return jsonify({"message":"ERROR: Sorry, Tool is not able to find MAC in SFCS for this model. Please insert iRMC IP instead.", "status":"bad"})
     
     irmc_ip = ""
     if userInput.startswith("172.25."):
@@ -69,10 +81,22 @@ def powerOff():
         if len(userInput) != 10:
             addNewTask(userInput, "Power Off", "bad")
             return jsonify({"message":"USN length is not correct! Please check it.", "status":"bad"})
-        irmc_ip = get_irmc_ip(userInput)["ip"]
+        try:
+            irmc_ip = get_irmc_ip(userInput)["ip"]
+        except:
+            addNewTask(userInput, "Power Off", "bad")
+            return jsonify({"message":"Can not get the iRMC IP. Please check it manually.", "status":"bad"})
     else:
         addNewTask(userInput, "Power Off", "bad")
         return jsonify({"message":"ERROR: Unknown input.", "status":"bad"})
+    
+    if not is_server_reachable(irmc_ip):
+        addNewTask(userInput, "Power Off", "bad")
+        return jsonify({"message":f"ERROR: iRMC IP {irmc_ip} is not reachable. Please check it.", "status":"bad"})
+    
+    if not check_api_password(find_password(irmc_ip), irmc_ip):
+            addNewTask(userInput, "Power Off", "bad")
+            return jsonify({"message":f"iRMC Password is not 'admin' or 'Password@123'. Please check it.", "status":"bad"})
     
     try:
         task = powerOff_system(irmc_ip)
@@ -97,9 +121,9 @@ def clearSEL():
     
     userInput = user_data['userData']
     
-    if userInput.startswith(("EWCF", "EWAB", "EWAA")):
+    if userInput.startswith(("EWCF", "EWAB", "EWAA", "EWBS")):
         addNewTask(userInput, "SD Card Check", "bad")
-        return jsonify({"message":"ERROR: Sorry but this model is not supported. Please insert iRMC IP instead.", "status":"bad"})
+        return jsonify({"message":"ERROR: Sorry, Tool is not able to find MAC in SFCS for this model. Please insert iRMC IP instead.", "status":"bad"})
     
     irmc_ip = ""
     if userInput.startswith("172.25."):
@@ -109,10 +133,22 @@ def clearSEL():
         if len(userInput) != 10:
             addNewTask(userInput, "Clear SEL", "bad")
             return jsonify({"message":"USN length is not correct! Please check it.", "status":"bad"})
-        irmc_ip = get_irmc_ip(userInput)["ip"]
+        try:
+            irmc_ip = get_irmc_ip(userInput)["ip"]
+        except:
+            addNewTask(userInput, "Clear SEL", "bad")
+            return jsonify({"message":"Can not get the iRMC IP. Please check it manually.", "status":"bad"})
     else:
         addNewTask(userInput, "Clear SEL", "bad")
         return jsonify({"message":"ERROR: Unknown input.", "status":"bad"})
+    
+    if not is_server_reachable(irmc_ip):
+        addNewTask(userInput, "Clear SEL", "bad")
+        return jsonify({"message":f"ERROR: iRMC IP {irmc_ip} is not reachable. Please check it.", "status":"bad"})
+    
+    if not check_api_password(find_password(irmc_ip), irmc_ip):
+            addNewTask(userInput, "Clear SEL", "bad")
+            return jsonify({"message":f"iRMC Password is not 'admin' or 'Password@123'. Please check it.", "status":"bad"})
     
     try:
         password = find_password(irmc_ip)
@@ -133,13 +169,14 @@ def getInfo():
     user_data = request.get_json()
     
     if not user_data or 'userData' not in user_data:
+        addNewTask(userInput, "Get Info", "bad")
         return jsonify({"message":"ERROR: Missing required data", "status":"bad"})
     
     userInput = user_data['userData']
     
-    if userInput.startswith(("EWCF", "EWAB", "EWAA")):
-        addNewTask(userInput, "SD Card Check", "bad")
-        return jsonify({"message":"ERROR: Sorry but this model is not supported. Please insert iRMC IP instead.", "status":"bad"})
+    if userInput.startswith(("EWCF", "EWAB", "EWAA", "EWBS")):
+        addNewTask(userInput, "Get Info", "bad")
+        return jsonify({"message":"ERROR: Sorry, Tool is not able to find MAC in SFCS for this model. Please insert iRMC IP instead.", "status":"bad"})
     
     irmc_ip = ""
     if userInput.startswith("172.25."):
@@ -149,14 +186,28 @@ def getInfo():
         if len(userInput) != 10:
             addNewTask(userInput, "Get Info", "bad")
             return jsonify({"message":"USN length is not correct! Please check it.", "status":"bad"})
-        irmc_ip = get_irmc_ip(userInput)["ip"]
+        try:
+            irmc_ip = get_irmc_ip(userInput)["ip"]
+        except:
+            addNewTask(userInput, "Get Info", "bad")
+            return jsonify({"message":"Can not get the iRMC IP. Please check it manually.", "status":"bad"})
     else:
         addNewTask(userInput, "Get Info", "bad")
         return jsonify({"message":"ERROR: Unknown input.", "status":"bad"})
     
+    if not is_server_reachable(irmc_ip):
+        addNewTask(userInput, "Get Info", "bad")
+        return jsonify({"message":f"ERROR: iRMC IP {irmc_ip} is not reachable. Please check it.", "status":"bad"})
+    
+    if not check_api_password(find_password(irmc_ip), irmc_ip):
+            addNewTask(userInput, "Get Info", "bad")
+            return jsonify({"message":f"iRMC Password is not 'admin' or 'Password@123'. Please check it.", "status":"bad"})
+    
+    
     try:
         power_status, password, model = check_power_status(irmc_ip)
         task = get_system_fw_info(irmc_ip, "admin", password)
+        uuid = loadUUID(irmc_ip, password)
         
         new_task = Task(usn=userInput, type_of_task="Get Info", status="ok")
         db.session.add(new_task)
@@ -172,11 +223,12 @@ def getInfo():
                 "iRMC-Password": password,
                 "Model": model,
                 "Power-Status": power_status,
+                "UUID": uuid,
                 }
         }, "status":"ok"})
     except:
         addNewTask(userInput, "Get Info", "bad")
-        return jsonify({"message":"ERROR! Please check it manually.", "status":"bad"})
+        return jsonify({"message":"ERROR! Can not load data. Please check it manually.", "status":"bad"})
 
 @app.route('/tasks', methods=['POST'])
 def add_task():
@@ -220,9 +272,9 @@ def sdCardCheck():
     
     userInput = user_data['userData']
     
-    if userInput.startswith(("EWCF", "EWAB", "EWAA")):
+    if userInput.startswith(("EWCF", "EWAB", "EWAA", "EWBS")):
         addNewTask(userInput, "SD Card Check", "bad")
-        return jsonify({"message":"ERROR: Sorry but this model is not supported. Please insert iRMC IP instead.", "status":"bad"})
+        return jsonify({"message":"ERROR: Sorry, Tool is not able to find MAC in SFCS for this model. Please insert iRMC IP instead.", "status":"bad"})
     
     irmc_ip = ""
     if userInput.startswith("172.25."):
@@ -232,10 +284,22 @@ def sdCardCheck():
         if len(userInput) != 10:
             addNewTask(userInput, "SD Card Check", "bad")
             return jsonify({"message":"USN length is not correct! Please check it.", "status":"bad"})
-        irmc_ip = get_irmc_ip(userInput)["ip"]
+        try:
+            irmc_ip = get_irmc_ip(userInput)["ip"]
+        except:
+            addNewTask(userInput, "SD Card Check", "bad")
+            return jsonify({"message":"Can not get the iRMC IP. Please check it manually.", "status":"bad"})
     else:
         addNewTask(userInput, "SD Card Check", "bad")
         return jsonify({"message":"ERROR: Unknown input.", "status":"bad"})
+    
+    if not is_server_reachable(irmc_ip):
+        addNewTask(userInput, "SD Card Check", "bad")
+        return jsonify({"message":f"ERROR: iRMC IP {irmc_ip} is not reachable. Please check it.", "status":"bad"})
+    
+    if not check_api_password(find_password(irmc_ip), irmc_ip):
+            addNewTask(userInput, "SD Card Check", "bad")
+            return jsonify({"message":f"iRMC Password is not 'admin' or 'Password@123'. Please check it.", "status":"bad"})
     
     try:
         password = find_password(irmc_ip)
@@ -265,9 +329,9 @@ def showSEL():
     
     userInput = user_data['userData']
     
-    if userInput.startswith(("EWCF", "EWAB", "EWAA")):
+    if userInput.startswith(("EWCF", "EWAB", "EWAA", "EWBS")):
         addNewTask(userInput, "Show SEL", "bad")
-        return jsonify({"message":"ERROR: Sorry but this model is not supported. Please insert iRMC IP instead.", "status":"bad"})
+        return jsonify({"message":"ERROR: Sorry, Tool is not able to find MAC in SFCS for this model. Please insert iRMC IP instead.", "status":"bad"})
     
     irmc_ip = ""
     if userInput.startswith("172.25."):
@@ -277,10 +341,22 @@ def showSEL():
         if len(userInput) != 10:
             addNewTask(userInput, "Show SEL", "bad")
             return jsonify({"message":"USN length is not correct! Please check it.", "status":"bad"})
-        irmc_ip = get_irmc_ip(userInput)["ip"]
+        try:
+            irmc_ip = get_irmc_ip(userInput)["ip"]
+        except:
+            addNewTask(userInput, "Show SEL", "bad")
+            return jsonify({"message":"Can not get the iRMC IP. Please check it manually.", "status":"bad"})
     else:
         addNewTask(userInput, "Show SEL", "bad")
         return jsonify({"message":"ERROR: Unknown input.", "status":"bad"})
+    
+    if not is_server_reachable(irmc_ip):
+        addNewTask(userInput, "Show SEL", "bad")
+        return jsonify({"message":f"ERROR: iRMC IP {irmc_ip} is not reachable. Please check it.", "status":"bad"})
+    
+    if not check_api_password(find_password(irmc_ip), irmc_ip):
+            addNewTask(userInput, "Show SEL", "bad")
+            return jsonify({"message":f"iRMC Password is not 'admin' or 'Password@123'. Please check it.", "status":"bad"})
     
     try:
         password = find_password(irmc_ip)
@@ -308,4 +384,18 @@ def showSEL():
         addNewTask(userInput, "Show SEL", "bad")
         return jsonify({"message":"ERROR! Please check it manually.", "status":"bad"})
     
+@app.route("/api/web-tools/report/", methods=["POST"])
+def report():
+    user_data = request.get_json()
     
+    if not user_data or 'subject' not in user_data:
+        return jsonify({"message":"ERROR: Missing required data", "status":"bad"})
+    
+    if not user_data or 'text' not in user_data:
+        return jsonify({"message":"ERROR: Missing required data", "status":"bad"})
+    
+    if uloz_data(user_data):
+        return jsonify({"message":"Report saved", "status":"ok"})
+    else:
+        print("Uložení dat se nezdařilo.")
+        return jsonify({"message":"ERROR: Something went wrong", "status":"bad"})

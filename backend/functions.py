@@ -9,6 +9,7 @@ import time
 import sys
 import json
 from models import Task, db
+import base64
 
 def find_password(ip):
     
@@ -24,7 +25,8 @@ def find_password(ip):
         "TX1330M6": "Password@123",
         "RX1310M6": "Password@123",
         "RX1320M6": "Password@123",
-        "RX1330M6": "Password@123"
+        "RX1330M6": "Password@123",
+        "RX1330M5S":"admin",
     }
     
     def get_password(model):
@@ -75,7 +77,8 @@ def check_power_status(ip):
         "TX1330M6": "Password@123",
         "RX1310M6": "Password@123",
         "RX1320M6": "Password@123",
-        "RX1330M6": "Password@123"
+        "RX1330M6": "Password@123",
+        "RX1330M5S": "admin",
     }
     
     def get_password(model):
@@ -87,6 +90,7 @@ def check_power_status(ip):
     data = response.json()["Oem"]["ts_fujitsu"]["AutoDiscoveryDescription"]["ServerNodeInformation"]["Model"]
     rada_serveru = data.split()[2]
     model = data.split()[1]+rada_serveru
+    # print(f"kontrola: model-{model}, rada-{rada_serveru}")
     
     password = ""
     if rada_serveru == "M7" or rada_serveru == "M2":
@@ -277,3 +281,51 @@ def get_sel(irmc, password):
             "error": "Could not find the specified event",
             "event_id": event_id
         }
+        
+def uloz_data(data):
+  try:
+    slovnik_jako_retezec = str(data)
+    with open('report.txt', 'a') as soubor:
+        soubor.write(slovnik_jako_retezec + '\n')
+        return True
+  except Exception as e:
+    print(f"Chyba při ukládání dat: {e}")
+    return False
+
+import socket
+
+def is_server_reachable(ip_address, port=80):
+  try:
+    # Using socket
+    s = socket.create_connection((ip_address, port), timeout=5)
+    s.close()
+    return True
+  except (socket.timeout, socket.error):
+    try:
+      # Using requests (for HTTP-based checks)
+      response = requests.get(f"http://{ip_address}:{port}", timeout=5)
+      return response.status_code == 200
+    except requests.exceptions.RequestException:
+      return False
+  
+
+
+def check_api_password(password, ip_address):
+  try:
+    api_url = f"https://{ip_address}/redfish/v1/Systems/0/Oem/ts_fujitsu/SDCard"
+    auth = requests.auth.HTTPBasicAuth("admin", password)
+    response = requests.get(api_url, auth=auth, verify=False)
+    return response.status_code == 200
+  except requests.exceptions.RequestException as e:
+    print(e)
+    return False
+
+def loadUUID(ip,password):
+    try:
+        url = f"https://{ip}/redfish/v1/Systems/0"
+        auth = ('admin', password)
+        response = requests.get(url, auth=auth, verify=False)
+        unit_uuid = response.json()['UUID']
+        return unit_uuid
+    except:
+        return False

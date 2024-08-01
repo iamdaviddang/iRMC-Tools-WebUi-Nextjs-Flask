@@ -1,5 +1,5 @@
 export const rebootApi = async (userInput) => {
-  const url = "http://172.25.177.2:5050/api/web-tools/reboot-power-on/";
+  const url = "http://10.82.66.179:5050/api/web-tools/reboot-power-on/";
   const userData = {
     userData: userInput.toString(2),
   };
@@ -21,7 +21,7 @@ export const rebootApi = async (userInput) => {
 };
 
 export const powerOffApi = async (userInput) => {
-  const url = "http://172.25.177.2:5050/api/web-tools/power-off/";
+  const url = "http://10.82.66.179:5050/api/web-tools/power-off/";
   const userData = {
     userData: userInput.toString(2),
   };
@@ -43,7 +43,7 @@ export const powerOffApi = async (userInput) => {
 };
 
 export const clearSelApi = async (userInput) => {
-  const url = "http://172.25.177.2:5050/api/web-tools/clear-sel/";
+  const url = "http://10.82.66.179:5050/api/web-tools/clear-sel/";
   const userData = {
     userData: userInput.toString(2),
   };
@@ -65,7 +65,7 @@ export const clearSelApi = async (userInput) => {
 };
 
 export const getInfoApi = async (userInput) => {
-  const url = "http://172.25.177.2:5050/api/web-tools/get-info/";
+  const url = "http://10.82.66.179:5050/api/web-tools/get-info/";
   const userData = {
     userData: userInput.toString(2),
   };
@@ -87,7 +87,7 @@ export const getInfoApi = async (userInput) => {
 };
 
 export const getSdCardCheckApi = async (userInput) => {
-  const url = "http://172.25.177.2:5050/api/web-tools/sd-card-check/";
+  const url = "http://10.82.66.179:5050/api/web-tools/sd-card-check/";
   const userData = {
     userData: userInput.toString(2),
   };
@@ -109,7 +109,7 @@ export const getSdCardCheckApi = async (userInput) => {
 };
 
 export const showSelApi = async (userInput) => {
-  const url = "http://172.25.177.2:5050/api/web-tools/sel/";
+  const url = "http://10.82.66.179:5050/api/web-tools/sel/";
   const userData = {
     userData: userInput.toString(2),
   };
@@ -121,6 +121,28 @@ export const showSelApi = async (userInput) => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(userData),
+    });
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    return null;
+  }
+};
+
+export const reportApi = async (userInput) => {
+  const url = "http://10.82.66.179:5050/api/web-tools/report/";
+  const userData = {
+    userInput,
+  };
+
+  try {
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(userInput),
     });
 
     const data = await response.json();

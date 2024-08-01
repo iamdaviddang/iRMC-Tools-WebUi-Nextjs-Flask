@@ -23,6 +23,13 @@ import {
 } from "../actions/API_requests";
 import { Response } from "./Response";
 import MyLoading from "./MyLoading";
+import { MdOutlineRestartAlt } from "react-icons/md";
+import { FaInfo } from "react-icons/fa";
+import { FaSdCard } from "react-icons/fa";
+import { FaMagnifyingGlass } from "react-icons/fa6";
+import { MdDelete } from "react-icons/md";
+import { FaPowerOff } from "react-icons/fa";
+import { toast } from "sonner";
 
 function ToolsTabs() {
   const [userInput, setUserInput] = useState("");
@@ -40,6 +47,7 @@ function ToolsTabs() {
   const rebootButtonClick = async () => {
     setShowResponse(false);
     if (userInput.trim() === "") {
+      toast("ERROR - You have to enter some USN or iRMC IP!");
       setShowResponse(false);
     } else {
       setLoading(true);
@@ -59,6 +67,7 @@ function ToolsTabs() {
   const powerOffButtonClick = async () => {
     setShowResponse(false);
     if (userInput.trim() === "") {
+      toast("ERROR - You have to enter some USN or iRMC IP!");
       setShowResponse(false);
     } else {
       setLoading(true);
@@ -78,6 +87,7 @@ function ToolsTabs() {
   const clearSELButtonClick = async () => {
     setShowResponse(false);
     if (userInput.trim() === "") {
+      toast("ERROR - You have to enter some USN or iRMC IP!");
       setShowResponse(false);
     } else {
       setLoading(true);
@@ -97,6 +107,7 @@ function ToolsTabs() {
   const getInfoButtonClick = async () => {
     setShowResponse(false);
     if (userInput.trim() === "") {
+      toast("ERROR - You have to enter some USN or iRMC IP!");
       setShowResponse(false);
     } else {
       setLoading(true);
@@ -117,6 +128,7 @@ function ToolsTabs() {
   const sdCardCheck = async () => {
     setShowResponse(false);
     if (userInput.trim() === "") {
+      toast("ERROR - You have to enter some USN or iRMC IP!");
       setShowResponse(false);
     } else {
       setLoading(true);
@@ -137,6 +149,7 @@ function ToolsTabs() {
   const showSel = async () => {
     setShowResponse(false);
     if (userInput.trim() === "") {
+      toast("ERROR - You have to enter some USN or iRMC IP!");
       setShowResponse(false);
     } else {
       setLoading(true);
@@ -165,10 +178,10 @@ function ToolsTabs() {
   };
 
   const handleClickData = async (clickData) => {
-    console.log("Data přijata z komponenty:", clickData["usn"]);
     clearValues();
     setShowResponse(false);
     if (clickData["usn"].trim() === "") {
+      toast("ERROR - You have to enter some USN or iRMC IP!");
       setShowResponse(false);
     } else {
       setLoading(true);
@@ -192,26 +205,60 @@ function ToolsTabs() {
       <div className="flex justify-center ">
         <Tabs defaultValue="Get Info" className="w-[90%]">
           <TabsList className="grid w-full grid-cols-6">
-            <TabsTrigger onClick={clearValues} value="Reboot/PowerON">
+            <TabsTrigger
+              onClick={clearValues}
+              value="Reboot/PowerON"
+              className="gap-1"
+            >
+              <MdOutlineRestartAlt className="h-4 w-4 text-primary" />
               Reboot/PowerON
             </TabsTrigger>
-            <TabsTrigger onClick={clearValues} value="Get Info">
+            <TabsTrigger
+              onClick={clearValues}
+              value="Get Info"
+              className="gap-1"
+            >
+              <FaInfo className="h-4 w-4 text-primary" />
               Get Info
             </TabsTrigger>
-            <TabsTrigger onClick={clearValues} value="SD Card check">
+            <TabsTrigger
+              onClick={clearValues}
+              value="SD Card check"
+              className="gap-1"
+            >
+              <FaSdCard className="h-4 w-4 text-primary" />
               SD Card check
             </TabsTrigger>
-            <TabsTrigger onClick={clearValues} value="Show SEL">
+            <TabsTrigger
+              onClick={clearValues}
+              value="Show SEL"
+              className="gap-1"
+            >
+              <FaMagnifyingGlass className="h-4 w-4 text-primary" />
               Show SEL
             </TabsTrigger>
-            <TabsTrigger onClick={clearValues} value="Clear SEL">
+            <TabsTrigger
+              onClick={clearValues}
+              value="Clear SEL"
+              className="gap-1"
+            >
+              <MdDelete className="h-4 w-4 text-primary" />
               Clear SEL
             </TabsTrigger>
-            <TabsTrigger onClick={clearValues} value="Power Off">
+            <TabsTrigger
+              onClick={clearValues}
+              value="Power Off"
+              className="gap-1"
+            >
+              <FaPowerOff className="h-4 w-4 text-primary" />
               Power Off
             </TabsTrigger>
           </TabsList>
-          <TabsContent onClick={clearValues} value="Reboot/PowerON">
+          <TabsContent
+            onClick={clearValues}
+            value="Reboot/PowerON"
+            className="gap-1"
+          >
             <Card>
               <CardHeader>
                 <CardTitle>Reboot/PowerON</CardTitle>

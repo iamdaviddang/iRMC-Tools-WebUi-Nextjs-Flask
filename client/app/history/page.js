@@ -9,7 +9,7 @@ export default function HistoryPage() {
   useEffect(() => {
     const fetchTasks = async () => {
       try {
-        const response = await fetch("http://127.0.0.1:5050/tasks");
+        const response = await fetch("http://10.82.66.179:5050/tasks");
         const data = await response.json();
         setTasks(data);
       } catch (error) {

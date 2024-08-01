@@ -8,9 +8,6 @@ import {
 } from "./ui/table";
 
 const TaskTable = ({ tasks }) => {
-  if (tasks.length === 0) {
-    console.log("je prazdny");
-  }
   return (
     <div>
       {tasks.length === 0 ? (
@@ -29,30 +26,26 @@ const TaskTable = ({ tasks }) => {
             {tasks
               .slice()
               .reverse()
-              .map(
-                (
-                  task
-                ) => (
-                  <TableRow key={task.id}>
-                    <TableCell>{task.id}</TableCell>
-                    <TableCell>{task.usn}</TableCell>
-                    <TableCell>{task.type_of_task}</TableCell>
-                    <TableCell
-                      className="font-semibold"
-                      style={{
-                        color:
-                          task.status === "ok"
-                            ? "green"
-                            : task.status === "bad"
-                            ? "red"
-                            : "inherit",
-                      }}
-                    >
-                      {task.status}
-                    </TableCell>
-                  </TableRow>
-                )
-              )}
+              .map((task) => (
+                <TableRow key={task.id}>
+                  <TableCell>{task.id}</TableCell>
+                  <TableCell>{task.usn}</TableCell>
+                  <TableCell>{task.type_of_task}</TableCell>
+                  <TableCell
+                    className="font-semibold"
+                    style={{
+                      color:
+                        task.status === "ok"
+                          ? "green"
+                          : task.status === "bad"
+                          ? "red"
+                          : "inherit",
+                    }}
+                  >
+                    {task.status}
+                  </TableCell>
+                </TableRow>
+              ))}
           </TableBody>
         </Table>
       )}
