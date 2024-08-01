@@ -11,7 +11,7 @@ const CopyToClipboardButton = ({ text }) => {
     try {
       await copy(text);
       setIsCopied(true);
-      toast("IP coped. " + text);
+      toast("IP address has been copied. " + text);
     } catch (error) {
       console.error("Failed to copy text to clipboard", error);
     }
