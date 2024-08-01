@@ -36,7 +36,7 @@ export const Response = ({ message, status, data, unit, onClick }) => {
   };
 
   return (
-    <div className="w-max">
+    <div className="w-max drop-shadow-md">
       <Alert variant={status === "ok" ? "success" : "destructive"}>
         <AlertTitle className="text-xl font-semibold flex items-center gap-1">
           {status === "bad" ? <strong>{unit}</strong> : null}
@@ -97,7 +97,19 @@ export const Response = ({ message, status, data, unit, onClick }) => {
             </p>
             <Separator />
             <p>
-              Status: <strong>{data["sd-card"]["Status"]}</strong>
+              Status:{" "}
+              <strong
+                style={{
+                  color:
+                    data["sd-card"]["Status"] === "OK"
+                      ? "green"
+                      : data["sd-card"]["Status"] !== "OK"
+                      ? "red"
+                      : "inherit",
+                }}
+              >
+                {data["sd-card"]["Status"]}
+              </strong>
             </p>
             <p>
               Inserted:{" "}

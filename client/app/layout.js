@@ -21,6 +21,7 @@ import {
 } from "@/components/ui/dialog";
 import { ReportForm } from "@/components/ReportForm";
 import ReportAlert from "@/components/ReportAlert";
+import { HiOutlineCommandLine } from "react-icons/hi2";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -79,6 +80,14 @@ export default function RootLayout({ children }) {
                   >
                     <GoCommandPalette className="h-4 w-4" />
                     <span className="text-xl">Commands</span>
+                  </Link>
+                  <Link
+                    href="/ips"
+                    className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary"
+                    prefetch={false}
+                  >
+                    <HiOutlineCommandLine className="h-4 w-4" />
+                    <span className="text-xl">IP's</span>
                   </Link>
                   {/* <Link
                     href="/report"
