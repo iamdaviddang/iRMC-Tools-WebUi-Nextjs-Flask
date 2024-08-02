@@ -26,11 +26,12 @@ def find_password(ip):
         "RX1310M6": "Password@123",
         "RX1320M6": "Password@123",
         "RX1330M6": "Password@123",
-        "RX1330M5S":"admin",
+        "RX1330M5S": "admin",
+        "RX2530M7S": "Password@123",
     }
     
     def get_password(model):
-        return pws.get(model, "defaultni_heslo")
+        return pws.get(model, "Password@123")
     
     # API request pro zjisteni modelu a rady(M5,M6,M7,M2)
     url = f"https://{ip}/redfish/v1"
@@ -79,10 +80,11 @@ def check_power_status(ip):
         "RX1320M6": "Password@123",
         "RX1330M6": "Password@123",
         "RX1330M5S": "admin",
+        "RX2530M7S": "Password@123",
     }
     
     def get_password(model):
-        return pws.get(model, "defaultni_heslo")
+        return pws.get(model, "Password@123")
     
     url = f"https://{ip}/redfish/v1"
     auth = ('', '')
@@ -315,7 +317,9 @@ def check_api_password(password, ip_address):
     api_url = f"https://{ip_address}/redfish/v1/Systems/0/Oem/ts_fujitsu/SDCard"
     auth = requests.auth.HTTPBasicAuth("admin", password)
     response = requests.get(api_url, auth=auth, verify=False)
-    return response.status_code == 200
+    print(response.status_code)
+    print(password)
+    return response.status_code ==200
   except requests.exceptions.RequestException as e:
     print(e)
     return False

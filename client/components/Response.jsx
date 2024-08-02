@@ -36,7 +36,7 @@ export const Response = ({ message, status, data, unit, onClick }) => {
   };
 
   return (
-    <div className="w-max drop-shadow-md">
+    <div className="w-max">
       <Alert variant={status === "ok" ? "success" : "destructive"}>
         <AlertTitle className="text-xl font-semibold flex items-center gap-1">
           {status === "bad" ? <strong>{unit}</strong> : null}
