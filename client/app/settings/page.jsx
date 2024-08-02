@@ -50,9 +50,11 @@ const Page = () => {
       <Card className="w-[350px]">
         <CardHeader>
           <CardTitle>Credentials for SSH</CardTitle>
-          <CardDescription>
-            Save your credentials to be able connect to file server via SSH
-          </CardDescription>
+          {!isLogget ? (
+            <CardDescription>
+              Save your credentials to be able connect to file server via SSH
+            </CardDescription>
+          ) : null}
         </CardHeader>
         <CardContent>
           <form onSubmit={(e) => e.preventDefault()}>
