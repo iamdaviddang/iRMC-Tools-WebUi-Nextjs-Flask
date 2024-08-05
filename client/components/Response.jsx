@@ -201,6 +201,19 @@ export const Response = ({ message, status, data, unit, onClick }) => {
         {data && data["sel"] && data["sel"].length === 0 ? (
           <p className="font-bold text-xl pt-5">SEL is clear!</p>
         ) : null}
+        {data && data["BIOS"] ? (
+          <div className="text-black text-xl mt-5 flex gap-5 flex-col">
+            <Separator />
+            <p>For: {unit}</p>
+            <Separator />
+            <p>
+              BIOS: <strong>{data["BIOS"]}</strong>
+            </p>
+            <p>
+              iRMC: <strong>{data["iRMC"]}</strong>
+            </p>
+          </div>
+        ) : null}
       </Alert>
     </div>
   );

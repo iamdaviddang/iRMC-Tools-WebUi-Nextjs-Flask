@@ -23,6 +23,8 @@ import { ReportForm } from "@/components/ReportForm";
 import ReportAlert from "@/components/ReportAlert";
 import { HiOutlineCommandLine } from "react-icons/hi2";
 import { CiSettings } from "react-icons/ci";
+import { FaInfo } from "react-icons/fa";
+import { IoInformation } from "react-icons/io5";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -89,6 +91,14 @@ export default function RootLayout({ children }) {
                   >
                     <HiOutlineCommandLine className="h-4 w-4" />
                     <span className="text-xl">IP's</span>
+                  </Link>
+                  <Link
+                    href="/fw"
+                    className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary"
+                    prefetch={false}
+                  >
+                    <FaInfo className="h-4 w-4" />
+                    <span className="text-xl">BIOS/IRMC FW</span>
                   </Link>
                   <Link
                     href="/settings"

@@ -1,4 +1,4 @@
-import os
+import os, zipfile
 import shutil
 import subprocess
 import requests
@@ -10,6 +10,8 @@ import sys
 import json
 from models import Task, db
 import base64
+import paramiko
+from scp import SCPClient
 
 def find_password(ip):
     
@@ -333,3 +335,146 @@ def loadUUID(ip,password):
         return unit_uuid
     except:
         return False
+    
+def get_BIOS(model, rada):
+    target = ""
+    file = ""
+    if rada == "M7":
+        file = "fw.toml"
+        target = f'[BIOS.{model}]'
+    else:
+        file = "fw.ini"
+        target = f'[{model}_BIOS]'
+        
+    if model == "TX1330M6" or model == "TX1320M6" or model == "TX1310M6" or model == "RX1310M6" or model == "RX1320M6" or model == "RX1330M6":
+        file = "fw.toml"
+        target = f'[BIOS.{model}]'
+        
+    
+    
+    file_name = najdi_zip_soubor()
+    with zipfile.ZipFile(f'temp_files/{file_name}', 'r') as zip_ref:
+        with zip_ref.open(f'INI/{file}', 'r') as file:
+            text = file.read().decode('utf-8')  # Dekódování do UTF-8
+            
+            lines = text.split('\n')
+            
+            
+            for i, line in enumerate(lines):
+                if line.strip() == target:
+                    if i + 2 < len(lines):
+                        original_string = lines[i + 2]
+                        cleaned_string = original_string.split("=")[1].strip('"')
+                        return cleaned_string
+                    else:
+                        print("Řádek, který je o dva níže, neexistuje.")
+                        return False
+                    break
+            else:
+                print(f"Hledaný řádek pro {target} nebyl nalezen.")
+                return False
+            
+def get_BMC(model, rada):
+    target = ""
+    file = ""
+    if rada == "M7":
+        file = "fw.toml"
+        target = f'[BMC.{model}]'
+    else:
+        file = "fw.ini"
+        target = f'[{model}_IRMC]'
+        
+    if model == "TX1330M6" or model == "TX1320M6" or model == "TX1310M6" or model == "RX1310M6" or model == "RX1320M6" or model == "RX1330M6":
+        file = "fw.toml"
+        target = f'[BMC.{model}]'
+        
+    
+    
+    file_name = najdi_zip_soubor()
+    with zipfile.ZipFile(f'temp_files/{file_name}', 'r') as zip_ref:
+        with zip_ref.open(f'INI/{file}', 'r') as file:
+            text = file.read().decode('utf-8')  # Dekódování do UTF-8
+            lines = text.split('\n')
+            
+            
+            for i, line in enumerate(lines):
+                if line.strip() == target:
+                    if i + 2 < len(lines):
+                        original_string = lines[i + 2]
+                        cleaned_string = original_string.split("=")[1].strip('"')
+                        return cleaned_string
+                    else:
+                        print("Řádek, který je o dva níže, neexistuje.")
+                        return False
+                    break
+            else:
+                print(f"Hledaný řádek pro {target} nebyl nalezen.")
+                return False
+            
+def delete_file(cesta_k_souboru):
+    if os.path.exists(cesta_k_souboru):
+        os.remove(cesta_k_souboru)
+        # print(f'Soubor {cesta_k_souboru} byl úspěšně smazán.')
+    else:
+        print(f'Soubor {cesta_k_souboru} neexistuje.')
+        
+def smaz_soubory(smernice_k_sluzbe):
+  for soubor in os.listdir(smernice_k_sluzbe):
+    cesta_k_souboru = os.path.join(smernice_k_sluzbe, soubor)
+    if os.path.isfile(cesta_k_souboru) and (soubor.endswith(".txt") or soubor.endswith(".zip")):
+      os.remove(cesta_k_souboru)
+    #   print(f"Soubor {cesta_k_souboru} byl smazán.")
+        
+def create_ssh_client(server, port, user, password):
+    client = paramiko.SSHClient()
+    client.load_system_host_keys()
+    client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+    client.connect(server, port, user, password)
+    return client
+
+def get_txt_files(ssh_client, remote_path):
+    stdin, stdout, stderr = ssh_client.exec_command(f'ls {remote_path}/*.txt')
+    txt_files = stdout.read().split()
+    # Konverze bytů na řetězce
+    txt_files = [file.decode('utf-8') for file in txt_files]
+    return [os.path.basename(file) for file in txt_files]
+
+def download_txt_files(ssh_client, scp_client, txt_files, remote_path, local_path):
+    for txt_file in txt_files:
+        remote_file = f'{remote_path}/{txt_file}'
+        local_file = os.path.join(local_path, txt_file)
+        scp_client.get(remote_file, local_file)
+        
+def create_ssh_client(server, port, user, password):
+    client = paramiko.SSHClient()
+    client.load_system_host_keys()
+    client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+    client.connect(server, port, user, password)
+    return client
+
+def get_zip_files(ssh_client, remote_path, base_names):
+    
+    stdin, stdout, stderr = ssh_client.exec_command(f'ls {remote_path}/*.zip')
+    zip_files = stdout.read().split()
+    zip_files = [file.decode('utf-8') for file in zip_files]
+    
+    
+    filtered_zip_files = [os.path.basename(file) for file in zip_files if os.path.basename(file).replace('.zip', '') in base_names]
+    return filtered_zip_files
+
+def download_zip_files(ssh_client, scp_client, zip_files, remote_path, local_path):
+    for zip_file in zip_files:
+        remote_file = f'{remote_path}/{zip_file}'  # Použití správného formátu cesty
+        local_file = os.path.join(local_path, zip_file)
+        scp_client.get(remote_file, local_file)
+        
+import os
+
+def najdi_zip_soubor():
+    
+    
+    for soubor in os.listdir(r'C:\Users\c2204004\Desktop\iRMC-tools-web-ui\backend\temp_files'):
+        if soubor.endswith(".zip"):
+            return soubor
+    return None
+

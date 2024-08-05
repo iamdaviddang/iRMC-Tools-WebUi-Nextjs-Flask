@@ -399,3 +399,80 @@ def report():
     else:
         print("Uložení dat se nezdařilo.")
         return jsonify({"message":"ERROR: Something went wrong", "status":"bad"})
+    
+@app.route("/api/web-tools/fw/", methods=["POST"])
+def get_bmc_bios():
+    user_data = request.get_json()
+    
+    if not user_data or 'userData' not in user_data:
+        return jsonify({"message":"ERROR: Missing required data", "status":"bad"})
+    
+    userInput = user_data['userData']
+
+    if not userInput.startswith(("RX", "TX", "CX")):
+        return jsonify({"message":f"ERROR: Unknown model-{userInput}", "status":"bad"})
+    
+    
+    remote_path = ""
+    rada = userInput[-2:]
+    if rada in ["M5", "M6"]:
+        remote_path="/mnt/M6_MM5_M1_PROD/M6/INI"
+    else:
+        remote_path='/mnt/M7_PROD/INI'
+        
+    if userInput in ["TX1330M6", "TX1320M6", "TX1310M6", "RX1310M6", "RX1320M6", "RX1330M6"]:
+        remote_path = "/mnt/M7_PROD/INI"
+    
+    
+    smaz_soubory(r'C:\Users\c2204004\Desktop\iRMC-tools-web-ui\backend\temp_files')
+    server = '172.25.8.2'
+    port = 22
+    user = 'davidd'
+    password = 'DavidDang2641@@@'
+    local_path = r'C:\Users\c2204004\Desktop\iRMC-tools-web-ui\backend\temp_files'
+    
+    #download TXT
+    ssh_client = create_ssh_client(server, port, user, password)
+    scp_client = SCPClient(ssh_client.get_transport())
+    
+    try:
+        txt_files = get_txt_files(ssh_client, remote_path)
+        download_txt_files(ssh_client, scp_client, txt_files, remote_path, local_path)
+    finally:
+        scp_client.close()
+        ssh_client.close()
+        
+    #download ZIP
+    txt_files_forZIP = [f for f in os.listdir(local_path) if f.endswith('.txt')]
+    base_names = [os.path.splitext(txt_file)[0] for txt_file in txt_files_forZIP]
+
+    ssh_clientZIP = create_ssh_client(server, port, user, password)
+    scp_clientZIP = SCPClient(ssh_clientZIP.get_transport())
+
+    try:
+        zip_files = get_zip_files(ssh_clientZIP, remote_path, base_names)
+        download_zip_files(ssh_clientZIP, scp_clientZIP, zip_files, remote_path, local_path)
+    finally:
+        scp_clientZIP.close()
+        ssh_clientZIP.close()
+        
+    bios = get_BIOS(userInput, rada) if get_BIOS(userInput, rada) else "unknown"
+    irmc = get_BMC(userInput, rada) if get_BMC(userInput, rada) else "unknown"
+
+    data_loaded = bios != "unknown" or irmc != "unknown"
+        
+    if data_loaded:
+        return jsonify({
+            "message":"FW info has been loaded",
+            "request-for":userInput,
+            "data":{
+                "BIOS":bios,
+                "iRMC": irmc}, "status":"ok"}), 200
+    else:
+        return jsonify({
+            "message":"FW info has not been loaded",
+            "request-for":userInput,
+            "data":{
+                "BIOS":"unknown",
+                "iRMC": "unknown"}, "status":"bad"}), 200
+    

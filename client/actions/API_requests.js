@@ -151,3 +151,25 @@ export const reportApi = async (userInput) => {
     return null;
   }
 };
+
+export const getFwApi = async (userInput) => {
+  const url = "http://10.82.66.179:5050/api/web-tools/fw/";
+  const userData = {
+    userData: userInput.toString(2),
+  };
+
+  try {
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(userData),
+    });
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    return null;
+  }
+};
