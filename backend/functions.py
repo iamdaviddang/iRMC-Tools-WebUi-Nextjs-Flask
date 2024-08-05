@@ -319,8 +319,8 @@ def check_api_password(password, ip_address):
     api_url = f"https://{ip_address}/redfish/v1/Systems/0/Oem/ts_fujitsu/SDCard"
     auth = requests.auth.HTTPBasicAuth("admin", password)
     response = requests.get(api_url, auth=auth, verify=False)
-    print(response.status_code)
-    print(password)
+    # print(response.status_code)
+    # print(password)
     return response.status_code ==200
   except requests.exceptions.RequestException as e:
     print(e)
@@ -347,6 +347,10 @@ def get_BIOS(model, rada):
         target = f'[{model}_BIOS]'
         
     if model == "TX1330M6" or model == "TX1320M6" or model == "TX1310M6" or model == "RX1310M6" or model == "RX1320M6" or model == "RX1330M6":
+        file = "fw.toml"
+        target = f'[BIOS.{model}]'
+        
+    if model == "RX2450M2":
         file = "fw.toml"
         target = f'[BIOS.{model}]'
         
@@ -388,12 +392,16 @@ def get_BMC(model, rada):
         file = "fw.toml"
         target = f'[BMC.{model}]'
         
+    if model == "RX2450M2":
+        file = "fw.toml"
+        target = f'[BMC.{model}]'
+        
     
     
     file_name = najdi_zip_soubor()
     with zipfile.ZipFile(f'temp_files/{file_name}', 'r') as zip_ref:
         with zip_ref.open(f'INI/{file}', 'r') as file:
-            text = file.read().decode('utf-8')  # Dekódování do UTF-8
+            text = file.read().decode('utf-8')
             lines = text.split('\n')
             
             
@@ -435,7 +443,7 @@ def create_ssh_client(server, port, user, password):
 def get_txt_files(ssh_client, remote_path):
     stdin, stdout, stderr = ssh_client.exec_command(f'ls {remote_path}/*.txt')
     txt_files = stdout.read().split()
-    # Konverze bytů na řetězce
+    
     txt_files = [file.decode('utf-8') for file in txt_files]
     return [os.path.basename(file) for file in txt_files]
 
@@ -464,7 +472,7 @@ def get_zip_files(ssh_client, remote_path, base_names):
 
 def download_zip_files(ssh_client, scp_client, zip_files, remote_path, local_path):
     for zip_file in zip_files:
-        remote_file = f'{remote_path}/{zip_file}'  # Použití správného formátu cesty
+        remote_file = f'{remote_path}/{zip_file}'
         local_file = os.path.join(local_path, zip_file)
         scp_client.get(remote_file, local_file)
         

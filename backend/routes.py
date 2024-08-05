@@ -408,10 +408,12 @@ def get_bmc_bios():
         return jsonify({"message":"ERROR: Missing required data", "status":"bad"})
     
     userInput = user_data['userData']
+    
+    if userInput.startswith(("EW")):
+        return jsonify({"message":f"ERROR: Its USN. Please insert model.", "status":"bad"})
 
     if not userInput.startswith(("RX", "TX", "CX")):
-        return jsonify({"message":f"ERROR: Unknown model-{userInput}", "status":"bad"})
-    
+        return jsonify({"message":f"ERROR: Unknown model- {userInput}", "status":"bad"})
     
     remote_path = ""
     rada = userInput[-2:]
@@ -422,6 +424,9 @@ def get_bmc_bios():
         
     if userInput in ["TX1330M6", "TX1320M6", "TX1310M6", "RX1310M6", "RX1320M6", "RX1330M6"]:
         remote_path = "/mnt/M7_PROD/INI"
+        
+    if userInput in ["RX2450M2"]:
+        remote_path = remote_path = "/mnt/M7_PROD/INI"
     
     
     smaz_soubory(r'C:\Users\c2204004\Desktop\iRMC-tools-web-ui\backend\temp_files')
@@ -475,4 +480,3 @@ def get_bmc_bios():
             "data":{
                 "BIOS":"unknown",
                 "iRMC": "unknown"}, "status":"bad"}), 200
-    

@@ -12,6 +12,12 @@ import {
 } from "@/components/ui/table";
 import { Button } from "./ui/button";
 import { toast } from "sonner";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 export const Response = ({ message, status, data, unit, onClick }) => {
   const clear = () => {
@@ -78,8 +84,21 @@ export const Response = ({ message, status, data, unit, onClick }) => {
             </p>
             <Separator />
             <p>
-              iRMC IP: <strong>{data["unit"]["iRMC-IP"]}</strong>
+              iRMC IP:{" "}
+              <a href={`http://${data["unit"]["iRMC-IP"]}`} target="_blank">
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <strong>{data["unit"]["iRMC-IP"]}</strong>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Open in new card</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </a>
             </p>
+
             <p>
               iRMC Password: <strong>{data["unit"]["iRMC-Password"]}</strong>
             </p>

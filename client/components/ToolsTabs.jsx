@@ -264,8 +264,8 @@ function ToolsTabs() {
               <CardHeader>
                 <CardTitle>Reboot/PowerON</CardTitle>
                 <CardDescription>
-                  This tool checks the power status and restarts or switches on
-                  the unit accordingly
+                  This tool restarts the unit. But if it is switched off it just
+                  switches it on.
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-2">
@@ -302,7 +302,7 @@ function ToolsTabs() {
                 <CardTitle>Get Info</CardTitle>
                 <CardDescription>
                   This tool shows you the Model, iRMC IP, iRMC Password, Power
-                  Status, BIOS version and iRMC version
+                  Status, BIOS version, iRMC version and UUID
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-2">
@@ -338,7 +338,7 @@ function ToolsTabs() {
               <CardHeader>
                 <CardTitle>SD Card check</CardTitle>
                 <CardDescription>
-                  This tool shows data of SD Card
+                  This tool will show you the SD card data.
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-2">

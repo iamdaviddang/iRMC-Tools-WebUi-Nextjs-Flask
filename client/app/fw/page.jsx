@@ -82,8 +82,8 @@ const page = () => {
               <CardHeader>
                 <CardTitle>Search for FW</CardTitle>
                 <CardDescription>
-                  This tool will help you to find out current production FW
-                  version of BIOS and iRMC
+                  This tool will help you find the current production FW for
+                  BIOS and iRMC
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-2">
@@ -94,7 +94,7 @@ const page = () => {
                     type="text"
                     value={userInput}
                     onChange={handleInputChange}
-                    placeholder="RX2540M7"
+                    placeholder="for example RX2540M7"
                   />
                 </div>
               </CardContent>

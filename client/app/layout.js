@@ -9,22 +9,10 @@ import Image from "next/image";
 import { GoCommandPalette } from "react-icons/go";
 import { PiSignOut } from "react-icons/pi";
 import { Toaster } from "@/components/ui/sonner";
-import { MdOutlineReport } from "react-icons/md";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-  DialogClose,
-} from "@/components/ui/dialog";
-import { ReportForm } from "@/components/ReportForm";
 import ReportAlert from "@/components/ReportAlert";
 import { HiOutlineCommandLine } from "react-icons/hi2";
 import { CiSettings } from "react-icons/ci";
 import { FaInfo } from "react-icons/fa";
-import { IoInformation } from "react-icons/io5";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -68,14 +56,14 @@ export default function RootLayout({ children }) {
                     <VscTools className="h-4 w-4" />
                     <span className="text-xl">iRMC Tools</span>
                   </Link>
-                  <Link
+                  {/* <Link
                     href="/history"
                     className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary"
                     prefetch={false}
                   >
                     <FaHistory className="h-4 w-4" />
                     <span className="text-xl">History</span>
-                  </Link>
+                  </Link> */}
                   <Link
                     href="/commands"
                     className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary"
