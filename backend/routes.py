@@ -465,6 +465,7 @@ def get_bmc_bios():
     irmc = get_BMC(userInput, rada) if get_BMC(userInput, rada) else "unknown"
 
     data_loaded = bios != "unknown" or irmc != "unknown"
+    smaz_soubory(r'C:\Users\c2204004\Desktop\iRMC-tools-web-ui\backend\temp_files')
         
     if data_loaded:
         return jsonify({
