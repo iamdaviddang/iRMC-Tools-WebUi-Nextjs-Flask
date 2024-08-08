@@ -17,13 +17,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import ConnectToSsh from "@/components/ConnectToSsh";
-import {
-  areCredentialsStored,
-  clearCredentials,
-  getCredentials,
-  saveCredentials,
-} from "@/localStorage/functions";
+import ConnectToSsh from "@/components/connect-to-ssh";
 
 const storages = [
   {
@@ -130,8 +124,11 @@ const page = () => {
               <CardTitle className="text-primary">File Servers</CardTitle>
               {!isLogget ? (
                 <CardDescription className="text-red-500">
-                  Your Credentials are not saved. Please go to Settings page and
-                  save them.
+                  Your Credentials are not saved. Please go to{" "}
+                  <a href="/settings" className="underline">
+                    Settings
+                  </a>{" "}
+                  page and save them.
                 </CardDescription>
               ) : null}
             </CardHeader>

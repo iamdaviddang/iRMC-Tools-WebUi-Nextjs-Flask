@@ -11,7 +11,7 @@ const CopyToClipboardButton = ({ text }) => {
     try {
       await copy(text);
       setIsCopied(true);
-      toast("IP address has been copied. " + text);
+      toast("Successfully copied. " + text);
     } catch (error) {
       console.error("Failed to copy text to clipboard", error);
     }
@@ -20,7 +20,8 @@ const CopyToClipboardButton = ({ text }) => {
   return (
     <div>
       <button onClick={handleCopyClick}>
-        {isCopied ? "Copied!" : <FaRegCopy />}
+        {/* {isCopied ? "Copied!" : <FaRegCopy />} */}
+        <FaRegCopy />
       </button>
     </div>
   );

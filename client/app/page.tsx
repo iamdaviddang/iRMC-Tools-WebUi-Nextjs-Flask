@@ -1,4 +1,4 @@
-import ToolsTabs from "@/components/ToolsTabs";
+import ToolsTabs from "@/components/tools-tabs";
 
 export default function Home() {
   return (

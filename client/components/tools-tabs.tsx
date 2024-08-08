@@ -16,13 +16,12 @@ import {
   clearSelApi,
   getInfoApi,
   getSdCardCheckApi,
-  getSEL,
   powerOffApi,
   rebootApi,
   showSelApi,
 } from "../actions/API_requests";
-import { Response } from "./Response";
-import MyLoading from "./MyLoading";
+import { Response } from "./response";
+import MyLoading from "./my-loading";
 import { MdOutlineRestartAlt } from "react-icons/md";
 import { FaInfo } from "react-icons/fa";
 import { FaSdCard } from "react-icons/fa";

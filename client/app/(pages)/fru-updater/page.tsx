@@ -1,4 +1,4 @@
-import FruUpdater from "@/components/FruUpdater";
+import FruUpdater from "@/components/fru-updater";
 import React from "react";
 
 const page = () => {

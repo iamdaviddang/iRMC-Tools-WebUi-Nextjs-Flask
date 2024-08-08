@@ -1,6 +1,6 @@
 "use client";
 
-import TaskTable from "@/components/TaskTable";
+import TaskTable from "@/components/task-table";
 import { useEffect, useState } from "react";
 
 export default function HistoryPage() {

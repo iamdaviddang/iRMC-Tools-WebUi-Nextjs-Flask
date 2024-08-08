@@ -62,7 +62,7 @@ const Page = () => {
                 <Label htmlFor="username">USERNAME</Label>
                 <Input
                   id="username"
-                  placeholder="boriso"
+                  placeholder=""
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
                 />
@@ -71,7 +71,7 @@ const Page = () => {
                 <Label htmlFor="password">PASSWORD</Label>
                 <Input
                   id="password"
-                  placeholder="******"
+                  placeholder=""
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
