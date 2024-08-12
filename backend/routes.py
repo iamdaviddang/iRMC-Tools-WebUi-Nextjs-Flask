@@ -1,9 +1,12 @@
+from dotenv import load_dotenv
+from os import environ
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 from functions import *
 from app import app
 from models import Task, db
 CORS(app)
+
 
 
 @app.route("/", methods=["GET"])
@@ -428,13 +431,13 @@ def get_bmc_bios():
     if userInput in ["RX2450M2"]:
         remote_path = remote_path = "/mnt/M7_PROD/INI"
     
+    smaz_soubory()
     
-    smaz_soubory(r'C:\Users\c2204004\Desktop\iRMC-tools-web-ui\backend\temp_files')
-    server = '172.25.8.2'
+    server = environ.get("SSH_SERVER")
     port = 22
-    user = 'davidd'
-    password = 'DavidDang2641@@@'
-    local_path = r'C:\Users\c2204004\Desktop\iRMC-tools-web-ui\backend\temp_files'
+    user = environ.get("SSH_USERNAME")
+    password = environ.get("SSH_PASSWORD")
+    local_path = os.path.join(os.getcwd(), "temp_files")
     
     #download TXT
     ssh_client = create_ssh_client(server, port, user, password)
@@ -465,7 +468,7 @@ def get_bmc_bios():
     irmc = get_BMC(userInput, rada) if get_BMC(userInput, rada) else "unknown"
 
     data_loaded = bios != "unknown" or irmc != "unknown"
-    smaz_soubory(r'C:\Users\c2204004\Desktop\iRMC-tools-web-ui\backend\temp_files')
+    smaz_soubory()
         
     if data_loaded:
         return jsonify({

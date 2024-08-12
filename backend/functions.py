@@ -1,15 +1,9 @@
 import os, zipfile
-import shutil
-import subprocess
 import requests
 from bs4 import BeautifulSoup
 import socket
-import logging
-import time
-import sys
 import json
 from models import Task, db
-import base64
 import paramiko
 from scp import SCPClient
 
@@ -426,12 +420,12 @@ def delete_file(cesta_k_souboru):
     else:
         print(f'Soubor {cesta_k_souboru} neexistuje.')
         
-def smaz_soubory(smernice_k_sluzbe):
-  for soubor in os.listdir(smernice_k_sluzbe):
-    cesta_k_souboru = os.path.join(smernice_k_sluzbe, soubor)
-    if os.path.isfile(cesta_k_souboru) and (soubor.endswith(".txt") or soubor.endswith(".zip")):
-      os.remove(cesta_k_souboru)
-    #   print(f"Soubor {cesta_k_souboru} byl smazán.")
+def smaz_soubory():
+    smernice_k_sluzbe = os.path.join(os.getcwd(), "temp_files")
+    for soubor in os.listdir(smernice_k_sluzbe):
+      cesta_k_souboru = os.path.join(smernice_k_sluzbe, soubor)
+      if os.path.isfile(cesta_k_souboru) and (soubor.endswith(".txt") or soubor.endswith(".zip")):
+        os.remove(cesta_k_souboru)
         
 def create_ssh_client(server, port, user, password):
     client = paramiko.SSHClient()
@@ -476,13 +470,14 @@ def download_zip_files(ssh_client, scp_client, zip_files, remote_path, local_pat
         local_file = os.path.join(local_path, zip_file)
         scp_client.get(remote_file, local_file)
         
-import os
-
 def najdi_zip_soubor():
-    
-    
-    for soubor in os.listdir(r'C:\Users\c2204004\Desktop\iRMC-tools-web-ui\backend\temp_files'):
+    # Získání aktuálního pracovního adresáře
+    aktu_adresar = os.getcwd()
+
+    # Sestavení cesty ke složce s ZIP soubory (relativní cesta)
+    cesta_ke_soubore = os.path.join(aktu_adresar, "temp_files")
+
+    for soubor in os.listdir(cesta_ke_soubore):
         if soubor.endswith(".zip"):
             return soubor
     return None
-

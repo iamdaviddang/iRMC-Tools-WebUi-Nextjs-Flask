@@ -109,6 +109,9 @@ export default function RootLayout({ children }) {
                       Go back to monitor
                     </span>
                   </Link>
+                  <div className="flex justify-center items-center p-0">
+                    <ReportAlert />
+                  </div>
                 </div>
               </div>
             </div>
@@ -184,7 +187,7 @@ export default function RootLayout({ children }) {
                       <span className="text-primary ">W</span>
                       iki
                     </Link>
-                    <ReportAlert />
+                    {/* <ReportAlert /> */}
                     <ThemeToggle />
                   </div>
                 </div>
