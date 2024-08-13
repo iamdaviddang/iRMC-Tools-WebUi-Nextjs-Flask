@@ -78,7 +78,7 @@ export default function RootLayout({ children }) {
                       prefetch={false}
                     >
                       <HiOutlineCommandLine className="h-4 w-4" />
-                      <span className="text-xl">IP's</span>
+                      <span className="text-xl">IPs</span>
                     </Link>
                     <Link
                       href="/fw"

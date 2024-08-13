@@ -56,7 +56,6 @@ export function ReportForm() {
                 <FormLabel>Message</FormLabel>
                 <FormControl className="flex flex-col">
                   <textarea
-                    rows="5"
                     required
                     placeholder="Write your message here"
                     className="border border-gray-200 rounded-xl p-3 w-full"

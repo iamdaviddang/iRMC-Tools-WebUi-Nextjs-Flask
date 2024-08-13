@@ -102,8 +102,9 @@ def check_power_status(ip):
     auth = ('admin', password)
     response = requests.get(url, auth=auth, verify=False)
     power_status = response.json()['PowerState']
+    uuid = response.json()['UUID']
 
-    return power_status, password, model
+    return power_status, password, model, uuid
 
 def reboot_system(irmc_ip):
     try:

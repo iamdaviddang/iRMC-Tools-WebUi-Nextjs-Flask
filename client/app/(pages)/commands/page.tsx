@@ -1,7 +1,7 @@
 import CopyToClipboardButton from "@/components/CopyToClipboardButton";
 import React from "react";
 
-const page = () => {
+const Page = () => {
   return (
     <div className="flex">
       <div className="ml-10 mt-10 shadow-md w-max">
@@ -34,4 +34,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;

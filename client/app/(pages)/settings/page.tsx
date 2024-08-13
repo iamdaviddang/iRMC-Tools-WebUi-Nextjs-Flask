@@ -16,7 +16,7 @@ import { clearCredentials } from "@/localStorage/functions";
 import { FaHistory } from "react-icons/fa";
 import { toast } from "sonner";
 
-function page() {
+function Page() {
   const [isLogged, setIsLogget] = useState(false);
 
   useEffect(() => {
@@ -144,4 +144,4 @@ function page() {
   );
 }
 
-export default page;
+export default Page;

@@ -9,7 +9,7 @@ import { MdConnectedTv } from "react-icons/md";
 import { toast } from "sonner";
 import { useEffect, useState } from "react";
 
-const ConnectToSsh = (props) => {
+const ConnectToSsh = (props: any) => {
   function encodeBase64(string) {
     return btoa(string);
   }

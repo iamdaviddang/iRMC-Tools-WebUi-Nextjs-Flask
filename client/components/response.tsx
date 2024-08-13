@@ -19,7 +19,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 
-export const Response = ({ message, status, data, unit, onClick }) => {
+export const Response = ({ message, status, data, unit, onClick }: any) => {
   const clear = () => {
     const clickData = { usn: unit };
     onClick(clickData);
@@ -38,7 +38,7 @@ export const Response = ({ message, status, data, unit, onClick }) => {
       second: "numeric",
       timeZoneName: "short",
     };
-    return date.toLocaleDateString("en-US", options);
+    return date.toLocaleDateString("en-US");
   };
 
   return (

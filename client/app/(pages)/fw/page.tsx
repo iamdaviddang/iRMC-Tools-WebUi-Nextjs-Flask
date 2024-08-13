@@ -23,7 +23,7 @@ import { FaPowerOff } from "react-icons/fa";
 import { toast } from "sonner";
 import { getFwApi } from "@/actions/API_requests";
 
-const page = () => {
+const Page = () => {
   const [userInput, setUserInput] = useState("");
   const [showResponse, setShowResponse] = useState(false);
   const [message, setMessage] = useState("");
@@ -120,4 +120,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;

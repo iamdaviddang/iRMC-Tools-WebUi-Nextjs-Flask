@@ -69,7 +69,7 @@ const fileServer = [
   },
 ];
 
-const page = () => {
+const Page = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [isLogget, setIsLogget] = useState(false);
@@ -92,7 +92,7 @@ const page = () => {
         <div id="storage-pc" className="w-max h-max flex-col ml-10">
           <Card x-chunk="dashboard-05-chunk-3">
             <CardHeader className="px-7">
-              <CardTitle className="text-primary">Storage PC's</CardTitle>
+              <CardTitle className="text-primary">Storage PCs</CardTitle>
             </CardHeader>
             <CardContent>
               <Table>
@@ -177,4 +177,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;

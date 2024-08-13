@@ -1,0 +1,17 @@
+click
+colorama
+Flask
+itsdangerous
+Jinja2
+MarkupSafe
+Werkzeug
+gunicorn
+CORS
+requests
+scp
+paramiko
+bs4
+flask_cors
+SQLAlchemy
+flask_sqlalchemy
+python-dotenv

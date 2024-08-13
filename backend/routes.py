@@ -208,9 +208,8 @@ def getInfo():
     
     
     try:
-        power_status, password, model = check_power_status(irmc_ip)
+        power_status, password, model, uuid = check_power_status(irmc_ip)
         task = get_system_fw_info(irmc_ip, "admin", password)
-        uuid = loadUUID(irmc_ip, password)
         
         new_task = Task(usn=userInput, type_of_task="Get Info", status="ok")
         db.session.add(new_task)
@@ -416,7 +415,10 @@ def get_bmc_bios():
         return jsonify({"message":f"ERROR: Its USN. Please insert model.", "status":"bad"})
 
     if not userInput.startswith(("RX", "TX", "CX")):
-        return jsonify({"message":f"ERROR: Unknown model- {userInput}", "status":"bad"})
+        return jsonify({"message":f"ERROR: Unknown model - {userInput}", "status":"bad"})
+    
+    if not len(userInput) == 8:
+        return jsonify({"message":f"ERROR: Unknown length of model - {userInput}", "status":"bad"})
     
     remote_path = ""
     rada = userInput[-2:]
@@ -430,6 +432,9 @@ def get_bmc_bios():
         
     if userInput in ["RX2450M2"]:
         remote_path = remote_path = "/mnt/M7_PROD/INI"
+        
+    if not rada in ["M5", "M6", "M7", "M1", "M4"]:
+        return jsonify({"message":f"ERROR: Unknown model - {userInput}", "status":"bad"})
     
     smaz_soubory()
     
