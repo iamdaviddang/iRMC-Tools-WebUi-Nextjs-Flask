@@ -18,6 +18,11 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "@/components/ui/hover-card";
 
 export const Response = ({ message, status, data, unit, onClick }: any) => {
   const clear = () => {
@@ -60,9 +65,31 @@ export const Response = ({ message, status, data, unit, onClick }: any) => {
             <p>
               BIOS: <strong>{data["unit"]["BIOS"]}</strong>
             </p>
+            {data["unit"]["Recovery-BIOS"] === "" ? (
+              <p className="text-sm">Recovery-BIOS: null</p>
+            ) : (
+              <p className="text-sm">
+                Recovery-BIOS: {data["unit"]["Recovery-BIOS"]}
+              </p>
+            )}
+            <Separator />
             <p>
               iRMC: <strong>{data["unit"]["iRMC"]}</strong>
             </p>
+            <div className="text-sm">
+              <p>
+                Low image: {data["unit"]["irmc_low_fw"]} -{" "}
+                {data["unit"]["irmc_low_state"]}
+              </p>
+              <p>
+                High image: {data["unit"]["irmc_high_fw"]} -{" "}
+                {data["unit"]["irmc_high_state"]}
+              </p>
+              <p>
+                Golden image: {data["unit"]["irmc_golden_fw"]} -{" "}
+                {data["unit"]["irmc_golden_state"]}
+              </p>
+            </div>
             <Separator />
             <p>
               Model: <strong>{data["unit"]["Model"]}</strong>

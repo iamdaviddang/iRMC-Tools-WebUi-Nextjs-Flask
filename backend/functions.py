@@ -1,4 +1,5 @@
 import os, zipfile
+import shutil
 import requests
 from bs4 import BeautifulSoup
 import socket
@@ -108,7 +109,7 @@ def check_power_status(ip):
 
 def reboot_system(irmc_ip):
     try:
-        pwr_status, password, model = check_power_status(irmc_ip)
+        pwr_status, password, model, uuid = check_power_status(irmc_ip)
     
         if pwr_status == "Off":
             url = f'https://{irmc_ip}/redfish/v1/Systems/0/Actions/Oem/FTSComputerSystem.Reset'
@@ -128,7 +129,7 @@ def reboot_system(irmc_ip):
     
 def powerOff_system(irmc_ip):
     try:
-        pwr_status, password, model = check_power_status(irmc_ip)
+        pwr_status, password, model, uuid = check_power_status(irmc_ip)
     
         if pwr_status == "Off":
             return "The unit is already switched off."
@@ -482,3 +483,138 @@ def najdi_zip_soubor():
         if soubor.endswith(".zip"):
             return soubor
     return None
+
+def irmc_fw(ip, password):
+    url = f"https://{ip}/redfish/v1/Managers/iRMC/Oem/ts_fujitsu/iRMCConfiguration/FWUpdate"
+    auth = ('admin', password)
+    response = requests.get(url, auth=auth, verify=False)
+    
+    # Low
+    irmc_low_fw = response.json()['iRMCFwImageLow']['FirmwareVersion']
+    irmc_low_state = response.json()['iRMCFwImageLow']['FirmwareRunningState']
+    
+    # High
+    irmc_high_fw = response.json()['iRMCFwImageHigh']['FirmwareVersion']
+    irmc_high_state = response.json()['iRMCFwImageHigh']['FirmwareRunningState']
+    
+    # Golden
+    try:
+        irmc_golden_fw = response.json()['iRMCFwImageGolden']['FirmwareVersion']
+        irmc_golden_state = response.json()['iRMCFwImageGolden']['FirmwareImageState']
+    except:
+        irmc_golden_fw = ""
+        irmc_golden_state = ""
+        
+    irmc_fw = {
+        "irmc_low_fw" : irmc_low_fw,
+        "irmc_low_state" : irmc_low_state,
+        "irmc_high_fw" : irmc_high_fw,
+        "irmc_high_state" : irmc_high_state,
+        "irmc_golden_fw" : irmc_golden_fw,
+        "irmc_golden_state" : irmc_golden_state
+        
+    }
+        
+    return irmc_fw
+
+def bios_fw(ip, password):
+    url = f"https://{ip}/redfish/v1/Systems/0/Oem/ts_fujitsu/FirmwareInventory"
+    auth = ('admin', password)
+    response = requests.get(url, auth=auth, verify=False)
+    bios = response.json()["SystemBIOS"]
+    
+    url = f"https://{ip}/redfish/v1/Systems/0/Bios"
+    auth = ('admin', password)
+    response = requests.get(url, auth=auth, verify=False)
+    recovery_bios = response.json()["Oem"]["ts_fujitsu"]["RecoveryBiosVersion"]
+    
+    bios_fw = {
+        "bios" : bios,
+        "recovery_bios" : recovery_bios
+    }
+    
+    return bios_fw
+
+
+def zazipovat_slozku():
+    # Získání cesty ke složce 'temp_files'
+    aktualni_adresar = os.path.dirname(os.path.abspath(__file__))
+    cilova_slozka = os.path.join(aktualni_adresar, 'temp_files')
+
+    # Získání seznamu složek v 'temp_files'
+    slozky = [d for d in os.listdir(cilova_slozka) if os.path.isdir(os.path.join(cilova_slozka, d))]
+    
+    # Ověření, že existuje pouze jedna složka
+    if len(slozky) != 1:
+        print("Ve složce 'temp_files' není přesně jedna složka, nelze pokračovat.")
+        return False
+
+    # Jméno složky a cesta k ní
+    jmeno_slozky = slozky[0]
+    cesta_slozky = os.path.join(cilova_slozka, jmeno_slozky)
+
+    # Cesta k ZIP souboru (bude uložen ve stejné složce 'temp_files')
+    zip_cesta = os.path.join(cilova_slozka, jmeno_slozky)
+
+    # Zazipování složky
+    shutil.make_archive(zip_cesta, 'zip', cilova_slozka, jmeno_slozky)
+    print(f"Složka {jmeno_slozky} byla úspěšně zazipována do {zip_cesta}.zip")
+
+    return True, zip_cesta
+
+def stahnout_slozku(jmeno_slozky, server='172.25.8.2', cesta='/mnt/M7_PROD/TestLog/', username='davidd', password='DavidDang2641@@@'):
+    # Inicializace SSH klienta
+    ssh = paramiko.SSHClient()
+    ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+    try:
+        ssh.connect(server, username=username, password=password)
+        
+        # Zkontrolujeme, zda složka existuje pomocí 'test -d'
+        stdin, stdout, stderr = ssh.exec_command(f'test -d {os.path.join(cesta, jmeno_slozky)} && echo "EXISTUJE" || echo "NEEXISTUJE"')
+        if stdout.read().decode().strip() != "EXISTUJE":
+            print(f"Složka {jmeno_slozky} neexistuje na serveru.")
+            return False
+
+        # Získání cesty ke složce 'temp_files'
+        aktualni_adresar = os.path.dirname(os.path.abspath(__file__))
+        cilova_slozka = os.path.join(aktualni_adresar, 'temp_files')
+        
+        # Pokud složka 'temp_files' neexistuje, vytvoříme ji
+        if not os.path.exists(cilova_slozka):
+            os.makedirs(cilova_slozka)
+        else:
+            # Vyprázdnění složky 'temp_files', pokud již existuje
+            for filename in os.listdir(cilova_slozka):
+                file_path = os.path.join(cilova_slozka, filename)
+                try:
+                    if os.path.isfile(file_path) or os.path.islink(file_path):
+                        os.unlink(file_path)  # Odstraní soubor nebo symbolický odkaz
+                    elif os.path.isdir(file_path):
+                        shutil.rmtree(file_path)  # Odstraní složku a její obsah
+                except Exception as e:
+                    print(f"Chyba při mazání souboru {file_path}: {e}")
+
+        # Připojíme se pomocí SCP a stáhneme složku do 'temp_files'
+        with SCPClient(ssh.get_transport()) as scp:
+            scp.get(os.path.join(cesta, jmeno_slozky), local_path=cilova_slozka, recursive=True)
+            print(f"Složka {jmeno_slozky} byla úspěšně stažena do {cilova_slozka}.")
+            
+
+        return True
+    except Exception as e:
+        print(f"Chyba: {str(e)}")
+        return False
+    finally:
+        ssh.close()
+        
+def get_model_gen(ip, password):
+    url=f"https://{ip}/redfish/v1"
+    auth = ('admin', password)
+    response = requests.get(url, auth=auth, verify=False)
+    full_model = response.json()["Oem"]["ts_fujitsu"]["AutoDiscoveryDescription"]["ChassisInformation"]["Model"]
+    
+    parts = full_model.split()
+    model = parts[1]
+    gen = parts[2]
+    modelgen = model+gen
+    return model, gen, modelgen

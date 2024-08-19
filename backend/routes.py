@@ -1,6 +1,6 @@
 from dotenv import load_dotenv
 from os import environ
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, send_file, send_from_directory
 from flask_cors import CORS
 from functions import *
 from app import app
@@ -209,7 +209,10 @@ def getInfo():
     
     try:
         power_status, password, model, uuid = check_power_status(irmc_ip)
-        task = get_system_fw_info(irmc_ip, "admin", password)
+        # task = get_system_fw_info(irmc_ip, "admin", password)
+        irmc = irmc_fw(irmc_ip,password)
+        bios = bios_fw(irmc_ip,password)
+        print(irmc, bios)
         
         new_task = Task(usn=userInput, type_of_task="Get Info", status="ok")
         db.session.add(new_task)
@@ -219,8 +222,15 @@ def getInfo():
             "request-for":userInput,
             "data":{
                 "unit":{
-                    "BIOS": task['SystemBIOS'],
-                "iRMC": task['BMCFirmware'],
+                    "BIOS": bios['bios'],
+                    "Recovery-BIOS": bios['recovery_bios'],
+                "iRMC": irmc['irmc_low_fw'],
+                "irmc_low_fw": irmc["irmc_low_fw"],
+                "irmc_low_state" : irmc["irmc_low_state"],
+                "irmc_high_fw" : irmc["irmc_high_fw"],
+                "irmc_high_state" : irmc["irmc_high_state"],
+                "irmc_golden_fw" : irmc["irmc_golden_fw"],
+                "irmc_golden_state" : irmc["irmc_golden_state"],
                 "iRMC-IP": irmc_ip,
                 "iRMC-Password": password,
                 "Model": model,
@@ -489,3 +499,52 @@ def get_bmc_bios():
             "data":{
                 "BIOS":"unknown",
                 "iRMC": "unknown"}, "status":"bad"}), 200
+
+
+
+@app.route("/api/web-tools/download-log/<usn>", methods=["GET"])
+def download_log(usn):
+    print(usn)
+    if usn.startswith(("EWCF", "EWAB", "EWAA", "EWBS")):
+        return jsonify({"message":"ERROR: Sorry, Tool is not able to find MAC in SFCS for this model. Please insert iRMC IP instead.", "status":"bad"})
+    
+    if len(usn) != 10:
+            return jsonify({"message":"USN length is not correct! Please check it.", "status":"bad"})
+    
+    irmc_ip = get_irmc_ip(usn)["ip"]
+    
+    if not is_server_reachable(irmc_ip):
+        return jsonify({"message":f"ERROR: iRMC IP {irmc_ip} is not reachable. Please check it.", "status":"bad"})
+    
+    
+    password = find_password(irmc_ip)
+    
+    if not check_api_password(password, irmc_ip):
+            return jsonify({"message":f"iRMC Password is not 'admin' or 'Password@123'. Please check it.", "status":"bad"})
+        
+
+    model, gen, modelgen = get_model_gen(irmc_ip,password)
+    
+    remote_path = ""
+    
+    if gen in ["M5", "M6"]:
+        remote_path="/mnt/M6_MM5_M1_PROD/TestLog/"
+    else:
+        remote_path='/mnt/M7_PROD/TestLog/'
+        
+    if modelgen in ["TX1330M6", "TX1320M6", "TX1310M6", "RX1310M6", "RX1320M6", "RX1330M6","RX2450M2"]:
+        remote_path = "/mnt/M7_PROD/TestLog/"
+        
+    if not gen in ["M5", "M6", "M7", "M1", "M4"]:
+        return jsonify({"message":f"ERROR: Unknown usn - {usn}", "status":"bad"})
+    
+    stahnout_slozku(usn, cesta=remote_path)
+    done, zip_path = zazipovat_slozku()
+    
+    if not done:
+        return jsonify({"message":f"ERROR - not done", "status":"bad"}) 
+    
+    aktualni_adresar = os.path.dirname(os.path.abspath(__file__))
+    cilova_slozka = os.path.join(aktualni_adresar, 'temp_files')
+    file_name = usn+".zip"
+    return send_from_directory(cilova_slozka, file_name, as_attachment=True)

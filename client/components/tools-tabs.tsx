@@ -117,7 +117,6 @@ function ToolsTabs() {
         setMessage(data["message"]);
         setStatus(data["status"]);
         setUnitData(data["data"]);
-        console.log(data["data"]);
         setUnit(data["request-for"]);
         setUserInput("");
         setShowResponse(true);
