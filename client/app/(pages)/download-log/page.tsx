@@ -10,18 +10,11 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsContent } from "@/components/ui/tabs";
 import { useState } from "react";
 import { Response } from "@/components/response";
 import MyLoading from "@/components/my-loading";
-import { MdOutlineRestartAlt } from "react-icons/md";
-import { FaInfo } from "react-icons/fa";
-import { FaSdCard } from "react-icons/fa";
-import { FaMagnifyingGlass } from "react-icons/fa6";
-import { MdDelete } from "react-icons/md";
-import { FaPowerOff } from "react-icons/fa";
 import { toast } from "sonner";
-import DownloadLog from "@/components/down-log";
 
 const Page = () => {
   const [userInput, setUserInput] = useState("");
@@ -35,16 +28,6 @@ const Page = () => {
 
   const handleInputChange = (event) => {
     setUserInput(event.target.value);
-  };
-
-  const clearValues = () => {
-    setUnitData(null);
-    setMessage("");
-    setStatus("");
-    setUnitData("");
-    setUserInput("");
-    setShowResponse(false);
-    setUnit("");
   };
 
   const downloadLogButtonClick = async () => {

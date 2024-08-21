@@ -212,7 +212,6 @@ def getInfo():
         # task = get_system_fw_info(irmc_ip, "admin", password)
         irmc = irmc_fw(irmc_ip,password)
         bios = bios_fw(irmc_ip,password)
-        print(irmc, bios)
         
         new_task = Task(usn=userInput, type_of_task="Get Info", status="ok")
         db.session.add(new_task)
@@ -409,7 +408,6 @@ def report():
     if uloz_data(user_data):
         return jsonify({"message":"Report saved", "status":"ok"})
     else:
-        print("Uložení dat se nezdařilo.")
         return jsonify({"message":"ERROR: Something went wrong", "status":"bad"})
     
 @app.route("/api/web-tools/fw/", methods=["POST"])
@@ -504,7 +502,6 @@ def get_bmc_bios():
 
 @app.route("/api/web-tools/download-log/<usn>", methods=["GET"])
 def download_log(usn):
-    print(usn)
     if usn.startswith(("EWCF", "EWAB", "EWAA", "EWBS")):
         return jsonify({"message":"ERROR: Sorry, Tool is not able to find MAC in SFCS for this model. Please insert iRMC IP instead.", "status":"bad"})
     

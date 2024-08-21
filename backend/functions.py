@@ -308,18 +308,98 @@ def is_server_reachable(ip_address, port=80):
     except requests.exceptions.RequestException:
       return False
   
-
+def change_password(irmc_ip, default_password, new_password="Password@123"):
+    etag = ""
+    auth_token = ""
+    
+    # 1 ziskani tokenu
+    url = f"https://{irmc_ip}/redfish/v1/SessionService/Sessions"
+    headers = {
+        "accept": "application/json",
+        "accept-language": "en-US,en;q=0.9,cs;q=0.8",
+        "content-type": "application/json",
+        "sec-ch-ua": "\"Not)A;Brand\";v=\"99\", \"Google Chrome\";v=\"127\", \"Chromium\";v=\"127\"",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Windows\"",
+        "sec-fetch-dest": "empty",
+        "sec-fetch-mode": "cors",
+        "sec-fetch-site": "same-origin",
+        "x-usage": "WebUI"
+    }
+    data = {
+        "UserName": "admin",
+        "Password": default_password,
+        "TotpCode": ""
+    }
+    response = requests.post(url, headers=headers, json=data, verify=False)
+    if not response.status_code == 201 or response.status_code == 200:
+        return False
+    auth_token = response.headers['X-Auth-Token']
+    
+    
+    # 2 ziskani etagu pomoci tokenu
+    url = f"https://{irmc_ip}/redfish/v1/AccountService/Accounts/2"
+    headers = {
+        "accept": "application/json",
+        "accept-language": "en-US,en;q=0.9,cs;q=0.8",
+        "content-type": "application/json",
+        "sec-ch-ua": "\"Not)A;Brand\";v=\"99\", \"Google Chrome\";v=\"127\", \"Chromium\";v=\"127\"",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Windows\"",
+        "sec-fetch-dest": "empty",
+        "sec-fetch-mode": "cors",
+        "sec-fetch-site": "same-origin",
+        "x-auth-token": auth_token,
+        "x-usage": "WebUI"
+    }
+    auth = ('admin', default_password)
+    response = requests.get(url=url, headers=headers, verify=False, auth=auth)
+    if response.status_code >= 300:
+        return False
+    etag = response.json()['@odata.etag']
+    
+    # 3 zmena hesla
+    url = f"https://{irmc_ip}/redfish/v1/AccountService/Accounts/2"
+    headers = {
+        "accept": "application/json",
+        "accept-language": "en-US,en;q=0.9,cs;q=0.8",
+        "cache-control": "max-age=0",
+        "content-type": "application/json",
+        "if-match": etag,
+        "sec-ch-ua": "\"Not)A;Brand\";v=\"99\", \"Google Chrome\";v=\"127\", \"Chromium\";v=\"127\"",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Windows\"",
+        "sec-fetch-dest": "empty",
+        "sec-fetch-mode": "cors",
+        "sec-fetch-site": "same-origin",
+        "x-auth-token": auth_token,
+        "x-usage": "WebUI"
+    }
+    data = {
+        "Password": new_password
+    }
+    response = requests.patch(url, headers=headers, json=data, verify=False)
+    if response.status_code >= 300:
+        return False
+    print(f"\n###Heslo bylo zmenen z {default_password} na {new_password}###\n")
+    return True
 
 def check_api_password(password, ip_address):
-  try:
+    default_passwords = ["Admin-lzH5p5POBYkJ","admin","Password@123","Admin-SguvlCskXm3L","Admin-2rcJuDoEOF/c","Admin-CMKPYp6ekoMs","Admin-Anl6vQ101tbz", "Admin-OFQE/TRz0lNy","Admin-1InmNvDF1ahY","Admin-WUey/ohT/pte","Admin-SguvlCskXm3L","Admin-SkIXNR/TAP9t","Admin-6FLdkraSUuTi","adminADMIN11", "Admin-GOtgGbPE24Lb","Admin-Mc5FyslyQqXd","Admin-w5fT5iyNXfAv"]
+    
+    # 1st try normal password
     api_url = f"https://{ip_address}/redfish/v1/Systems/0/Oem/ts_fujitsu/SDCard"
     auth = requests.auth.HTTPBasicAuth("admin", password)
     response = requests.get(api_url, auth=auth, verify=False)
-    # print(response.status_code)
-    # print(password)
-    return response.status_code ==200
-  except requests.exceptions.RequestException as e:
-    print(e)
+    
+    if response.status_code == 200:
+        return True
+    
+    # if normal pw doesnt work then try to change default pw
+    if response.status_code != 200:
+        for pw in default_passwords:
+            if change_password(irmc_ip=ip_address, default_password=pw, new_password=password):
+                return True
     return False
 
 def loadUUID(ip,password):
