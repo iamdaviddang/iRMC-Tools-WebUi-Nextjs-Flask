@@ -654,6 +654,8 @@ def stahnout_slozku(jmeno_slozky, server='172.25.8.2', cesta='/mnt/M7_PROD/TestL
         if stdout.read().decode().strip() != "EXISTUJE":
             print(f"Složka {jmeno_slozky} neexistuje na serveru.")
             return False
+         
+        print("Snad to tady nepokracuje")   
 
         # Získání cesty ke složce 'temp_files'
         aktualni_adresar = os.path.dirname(os.path.abspath(__file__))

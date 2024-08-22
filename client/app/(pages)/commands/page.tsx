@@ -30,6 +30,17 @@ const Page = () => {
           </div>
         </div>
       </div>
+      <div className="ml-10 mt-10 shadow-md w-max border">
+        <div className="h-[40px] w-[400px] bg-primary  items-center flex rounded-t-md">
+          <h2 className="p-3 font-bold text-white">Reboot from OS to BIOS</h2>
+        </div>
+        <div className="h-max w-[400px]  flex flex-col gap-3">
+          <div className="flex items-center">
+            <p className="p-3">systemctl reboot --firmware-setup</p>
+            <CopyToClipboardButton text="systemctl reboot --firmware-setup" />
+          </div>
+        </div>
+      </div>
     </div>
   );
 };

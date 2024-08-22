@@ -503,21 +503,21 @@ def get_bmc_bios():
 @app.route("/api/web-tools/download-log/<usn>", methods=["GET"])
 def download_log(usn):
     if usn.startswith(("EWCF", "EWAB", "EWAA", "EWBS")):
-        return jsonify({"message":"ERROR: Sorry, Tool is not able to find MAC in SFCS for this model. Please insert iRMC IP instead.", "status":"bad"})
+        return jsonify({"message":"ERROR: Sorry, Tool is not able to find MAC in SFCS for this model. Please insert iRMC IP instead.", "status":"bad"}),404
     
     if len(usn) != 10:
-            return jsonify({"message":"USN length is not correct! Please check it.", "status":"bad"})
+            return jsonify({"message":"USN length is not correct! Please check it.", "status":"bad"}),404
     
     irmc_ip = get_irmc_ip(usn)["ip"]
     
     if not is_server_reachable(irmc_ip):
-        return jsonify({"message":f"ERROR: iRMC IP {irmc_ip} is not reachable. Please check it.", "status":"bad"})
+        return jsonify({"message":f"ERROR: iRMC IP {irmc_ip} is not reachable. Please check it.", "status":"bad"}),404
     
     
     password = find_password(irmc_ip)
     
     if not check_api_password(password, irmc_ip):
-            return jsonify({"message":f"iRMC Password is not 'admin' or 'Password@123'. Please check it.", "status":"bad"})
+            return jsonify({"message":f"iRMC Password is not 'admin' or 'Password@123'. Please check it.", "status":"bad"}),404
         
 
     model, gen, modelgen = get_model_gen(irmc_ip,password)
@@ -533,13 +533,14 @@ def download_log(usn):
         remote_path = "/mnt/M7_PROD/TestLog/"
         
     if not gen in ["M5", "M6", "M7", "M1", "M4"]:
-        return jsonify({"message":f"ERROR: Unknown usn - {usn}", "status":"bad"})
+        return jsonify({"message":f"ERROR: Unknown usn - {usn}", "status":"bad"}),404
     
-    stahnout_slozku(usn, cesta=remote_path)
+    if stahnout_slozku(usn, cesta=remote_path) == False:
+        return jsonify({"message":f"ERROR - LOG not found", "status":"bad"}), 404
     done, zip_path = zazipovat_slozku()
     
     if not done:
-        return jsonify({"message":f"ERROR - not done", "status":"bad"}) 
+        return jsonify({"message":f"ERROR - not done", "status":"bad"}),404
     
     aktualni_adresar = os.path.dirname(os.path.abspath(__file__))
     cilova_slozka = os.path.join(aktualni_adresar, 'temp_files')

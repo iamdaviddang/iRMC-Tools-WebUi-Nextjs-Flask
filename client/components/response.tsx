@@ -66,7 +66,7 @@ export const Response = ({ message, status, data, unit, onClick }: any) => {
               BIOS: <strong>{data["unit"]["BIOS"]}</strong>
             </p>
             {data["unit"]["Recovery-BIOS"] === "" ? (
-              <p className="text-sm">Recovery-BIOS: null</p>
+              <p className="text-sm">Recovery-BIOS: -</p>
             ) : (
               <p className="text-sm">
                 Recovery-BIOS: {data["unit"]["Recovery-BIOS"]}

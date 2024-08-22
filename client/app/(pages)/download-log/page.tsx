@@ -41,9 +41,18 @@ const Page = () => {
         const response = await fetch(
           `http://10.82.66.179:5050/api/web-tools/download-log/${userInput}`
         );
-        const blob = await response.blob();
-        const url = window.URL.createObjectURL(blob);
-        setDownloadLink(url);
+        if (response.status == 200) {
+          const blob = await response.blob();
+          const url = window.URL.createObjectURL(blob);
+          setDownloadLink(url);
+        } else {
+          setDownloadLink(null);
+          const data = await response.json();
+          console.log(data);
+          setMessage(data["message"]);
+          setStatus(data["status"]);
+          setShowResponse(true);
+        }
       } catch (error) {
         console.error("Error fetching data:", error);
         // Zde můžete přidat nějakou chybovou hlášku pro uživatele
