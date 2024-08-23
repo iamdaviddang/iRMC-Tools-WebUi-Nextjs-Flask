@@ -129,10 +129,10 @@ export const Response = ({ message, status, data, unit, onClick }: any) => {
             <p>
               iRMC Password: <strong>{data["unit"]["iRMC-Password"]}</strong>
             </p>
-            <Separator />
+            {/* <Separator />
             <p>
               UUID: <strong>{data["unit"]["UUID"]}</strong>
-            </p>
+            </p> */}
           </div>
         ) : null}
         {data && data["sd-card"] ? (

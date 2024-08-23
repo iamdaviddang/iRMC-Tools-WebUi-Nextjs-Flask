@@ -7,6 +7,9 @@ import json
 from models import Task, db
 import paramiko
 from scp import SCPClient
+import urllib3
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+
 
 def find_password(ip):
     
@@ -381,7 +384,7 @@ def change_password(irmc_ip, default_password, new_password="Password@123"):
     response = requests.patch(url, headers=headers, json=data, verify=False)
     if response.status_code >= 300:
         return False
-    print(f"\n###Heslo bylo zmenen z {default_password} na {new_password}###\n")
+    print(f"\n*** Password has been changed from: {default_password} to: {new_password} ***\n")
     return True
 
 def check_api_password(password, ip_address):
@@ -393,13 +396,19 @@ def check_api_password(password, ip_address):
     response = requests.get(api_url, auth=auth, verify=False)
     
     if response.status_code == 200:
+        print(f"Password is: {password}")
         return True
+    else:
+        print(f"Password is not: {password}")
     
     # if normal pw doesnt work then try to change default pw
     if response.status_code != 200:
         for pw in default_passwords:
             if change_password(irmc_ip=ip_address, default_password=pw, new_password=password):
+                
                 return True
+            
+    print("\n*** Error while checking password ***\n")
     return False
 
 def loadUUID(ip,password):
