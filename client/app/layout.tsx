@@ -18,6 +18,7 @@ import { ThemeToggle } from "@/components/theme-toggle";
 import { GoDownload } from "react-icons/go";
 import { IoInformation } from "react-icons/io5";
 import { FaRegFileAlt } from "react-icons/fa";
+import DateTime from "@/components/date-time";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -53,7 +54,7 @@ export default function RootLayout({ children }) {
                       height={35}
                       width={35}
                     />
-                    <span className="text-2xl">Tools</span>
+                    <span className="text-2xl font-bold">Tools</span>
                   </Link>
                 </div>
 
@@ -128,9 +129,6 @@ export default function RootLayout({ children }) {
                       Go back to monitor
                     </span>
                   </Link>
-                  <div className="flex justify-center items-center p-0">
-                    <ReportAlert />
-                  </div>
                 </div>
               </div>
             </div>
@@ -195,7 +193,9 @@ export default function RootLayout({ children }) {
                   </SheetContent>
                 </Sheet>
                 <div className="w-full h-full flex items-center justify-between gap-3">
-                  <div id="start" className="h-max w-max"></div>
+                  <div id="start" className="h-max w-max">
+                    <DateTime />
+                  </div>
                   <div id="end" className="flex w-max h-max items-center gap-3">
                     <Link
                       href="https://172.25.32.5/mediawiki/Main_Page"
@@ -206,7 +206,6 @@ export default function RootLayout({ children }) {
                       <span className="text-primary ">W</span>
                       iki
                     </Link>
-                    {/* <ReportAlert /> */}
                     <ThemeToggle />
                   </div>
                 </div>
