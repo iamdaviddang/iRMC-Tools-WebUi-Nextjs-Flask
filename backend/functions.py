@@ -1,4 +1,5 @@
 import os, zipfile
+from os import environ
 import shutil
 import requests
 from bs4 import BeautifulSoup
@@ -664,7 +665,7 @@ def stahnout_slozku(jmeno_slozky, server='172.25.8.2', cesta='/mnt/M7_PROD/TestL
             print(f"Složka {jmeno_slozky} neexistuje na serveru.")
             return False
          
-        print("Snad to tady nepokracuje")   
+        
 
         # Získání cesty ke složce 'temp_files'
         aktualni_adresar = os.path.dirname(os.path.abspath(__file__))
@@ -709,3 +710,74 @@ def get_model_gen(ip, password):
     gen = parts[2]
     modelgen = model+gen
     return model, gen, modelgen
+
+def check_sar_on_server(user_input, generation, model):
+    host = "172.25.8.2"
+    username = "davidd"
+    password = "DavidDang2641@@@"
+    filename = "0000" + user_input + "_SAR.txt"
+    path = "/mnt/M7_PROD/SAR/"
+    
+    
+    if generation in ["M5", "M6", "M1"]:
+        path = "/mnt/M6_MM5_M1_PROD/SAR/"
+        
+    if model in ["TX1330M6", "TX1320M6", "TX1310M6", "RX1310M6", "RX1320M6", "RX1330M6","RX2450M2"]:
+        path = "/mnt/M7_PROD/SAR/"
+
+
+    try:
+        ssh = paramiko.SSHClient()
+        ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        ssh.connect(hostname=host, username=username, password=password)
+
+        stdin, stdout, stderr = ssh.exec_command(f"ls -la {path}{filename}")
+
+        output = stdout.read().decode('utf-8')
+        
+
+        if not output:
+            return f"File '{filename}' not found!"
+
+        formatted_output = output.split()
+        last_modify = formatted_output[5] + " " + formatted_output[6] + " " + formatted_output[7]
+
+        return last_modify
+
+    except Exception as e:
+        return f"Connection to FS failed. Contact David! {str(e)}"
+    
+def check_flow_on_server(user_input, generation, model):
+    host = "172.25.8.2"
+    username = "davidd"
+    password = "DavidDang2641@@@"
+    filename = "0000" + user_input + f"_{model}.cpn.txt"
+    path = "/mnt/M7_PROD/CPN/"
+    
+    
+    if generation in ["M5", "M6", "M1"]:
+        path = "/mnt/M6_MM5_M1_PROD/CPN/"
+        
+    if model in ["TX1330M6", "TX1320M6", "TX1310M6", "RX1310M6", "RX1320M6", "RX1330M6","RX2450M2"]:
+        path = "/mnt/M7_PROD/CPN/"
+
+
+    try:
+        ssh = paramiko.SSHClient()
+        ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        ssh.connect(hostname=host, username=username, password=password)
+
+        stdin, stdout, stderr = ssh.exec_command(f"ls -la {path}{filename}")
+
+        output = stdout.read().decode('utf-8')
+
+        if not output:
+            return f"File '{filename}' not found!"
+
+        formatted_output = output.split()
+        last_modify = formatted_output[5] + " " + formatted_output[6] + " " + formatted_output[7]
+
+        return last_modify
+
+    except Exception as e:
+        return f"Connection to FS failed. Contact David! {str(e)}"

@@ -546,3 +546,25 @@ def download_log(usn):
     cilova_slozka = os.path.join(aktualni_adresar, 'temp_files')
     file_name = usn+".zip"
     return send_from_directory(cilova_slozka, file_name, as_attachment=True)
+
+@app.route("/api/web-tools/sar-flow/", methods=["POST"])
+def getLastModified():
+    user_data = request.get_json()
+    
+    if not user_data:
+        return jsonify({"message":"ERROR: Missing data", "status":"bad"})
+    
+    if not 'mo' in user_data:
+        return jsonify({"message":"ERROR: Missing MO", "status":"bad"})
+    
+    if not 'model' in user_data:
+        return jsonify({"message":"ERROR: Missing model", "status":"bad"})
+    
+    mo = str(user_data['mo'])
+    model = user_data['model']
+    generation = model[-2:]
+    
+    return jsonify({"message" : "Result:", "status": "ok", "data" : {
+        "sar" : check_sar_on_server(mo, generation, model),
+        "cpn": check_flow_on_server(mo, generation, model)
+    }})

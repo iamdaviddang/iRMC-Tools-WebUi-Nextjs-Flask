@@ -17,6 +17,7 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { GoDownload } from "react-icons/go";
 import { IoInformation } from "react-icons/io5";
+import { FaRegFileAlt } from "react-icons/fa";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -97,6 +98,14 @@ export default function RootLayout({ children }) {
                     >
                       <GoDownload className="h-4 w-4" />
                       <span className="text-xl">Download LOGs</span>
+                    </Link>
+                    <Link
+                      href="/sar-cpn-check"
+                      className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary"
+                      prefetch={false}
+                    >
+                      <FaRegFileAlt className="h-4 w-4" />
+                      <span className="text-xl">SAR/CPN Check</span>
                     </Link>
                     <Link
                       href="/settings"

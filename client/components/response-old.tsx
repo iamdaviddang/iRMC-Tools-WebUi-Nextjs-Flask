@@ -18,6 +18,11 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "@/components/ui/hover-card";
 
 export const Response = ({ message, status, data, unit, onClick }: any) => {
   const clear = () => {
@@ -253,21 +258,6 @@ export const Response = ({ message, status, data, unit, onClick }: any) => {
             <p>
               iRMC: <strong>{data["iRMC"]}</strong>
             </p>
-          </div>
-        ) : null}
-        {data && data["sar"] ? (
-          <div className="flex flex-col gap-5">
-            {data["sar"] ? (
-              <p className="text-black text-2xl mt-5">
-                SAR last change: <strong>{data["sar"]}</strong>
-              </p>
-            ) : null}
-            {data["sar"] && data["cpn"] ? <Separator /> : null}
-            {data["cpn"] ? (
-              <p className="text-black text-2xl">
-                CPN last change: <strong>{data["cpn"]}</strong>
-              </p>
-            ) : null}
           </div>
         ) : null}
       </Alert>
