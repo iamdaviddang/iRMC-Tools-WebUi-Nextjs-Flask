@@ -652,7 +652,7 @@ def zazipovat_slozku():
 
     return True, zip_cesta
 
-def stahnout_slozku(jmeno_slozky, server='172.25.8.2', cesta='/mnt/M7_PROD/TestLog/', username='davidd', password='DavidDang2641@@@'):
+def stahnout_slozku(jmeno_slozky, server=environ.get("SSH_SERVER"), cesta='/mnt/M7_PROD/TestLog/', username=environ.get("SSH_USERNAME"), password=environ.get("SSH_PASSWORD")):
     # Inicializace SSH klienta
     ssh = paramiko.SSHClient()
     ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
@@ -712,9 +712,9 @@ def get_model_gen(ip, password):
     return model, gen, modelgen
 
 def check_sar_on_server(user_input, generation, model):
-    host = "172.25.8.2"
-    username = "davidd"
-    password = "DavidDang2641@@@"
+    host = environ.get("SSH_SERVER")
+    username = environ.get("SSH_USERNAME")
+    password = environ.get("SSH_PASSWORD")
     filename = "0000" + user_input + "_SAR.txt"
     path = "/mnt/M7_PROD/SAR/"
     
@@ -748,9 +748,9 @@ def check_sar_on_server(user_input, generation, model):
         return f"Connection to FS failed. Contact David! {str(e)}"
     
 def check_flow_on_server(user_input, generation, model):
-    host = "172.25.8.2"
-    username = "davidd"
-    password = "DavidDang2641@@@"
+    host = environ.get("SSH_SERVER")
+    username = environ.get("SSH_USERNAME")
+    password = environ.get("SSH_PASSWORD")
     filename = "0000" + user_input + f"_{model}.cpn.txt"
     path = "/mnt/M7_PROD/CPN/"
     
