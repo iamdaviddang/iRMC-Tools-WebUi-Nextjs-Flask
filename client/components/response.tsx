@@ -29,7 +29,6 @@ export const Response = ({ message, status, data, unit, onClick }: any) => {
   const formatDateTime = (dateTime) => {
     const date = new Date(dateTime);
     const options = {
-      // weekday: "long",
       day: "numeric",
       month: "long",
       year: "numeric",
@@ -60,7 +59,7 @@ export const Response = ({ message, status, data, unit, onClick }: any) => {
             <p>
               BIOS: <strong>{data["unit"]["BIOS"]}</strong>
             </p>
-            {data["unit"]["Recovery-BIOS"] &&
+            {data["unit"]["Recovery-BIOS"] ||
             data["unit"]["Recovery-BIOS"] == "" ? null : (
               <p className="text-sm">
                 Recovery-BIOS: {data["unit"]["Recovery-BIOS"]}
@@ -80,9 +79,8 @@ export const Response = ({ message, status, data, unit, onClick }: any) => {
                 {data["unit"]["irmc_high_state"]}
               </p>
 
-              {data["unit"]["irmc_golden_fw"] &&
-              data["unit"]["irmc_golden_fw"] != "" &&
-              data["unit"]["irmc_golden_fw"] != null ? (
+              {data["unit"]["irmc_golden_fw"] ||
+              data["unit"]["irmc_golden_fw"] != "" ? (
                 <p>
                   Golden image: {data["unit"]["irmc_golden_fw"]} -{" "}
                   {data["unit"]["irmc_golden_state"]}
@@ -128,10 +126,6 @@ export const Response = ({ message, status, data, unit, onClick }: any) => {
             <p>
               iRMC Password: <strong>{data["unit"]["iRMC-Password"]}</strong>
             </p>
-            {/* <Separator />
-            <p>
-              UUID: <strong>{data["unit"]["UUID"]}</strong>
-            </p> */}
           </div>
         ) : null}
         {data && data["sd-card"] ? (
@@ -223,12 +217,12 @@ export const Response = ({ message, status, data, unit, onClick }: any) => {
                               ? "red"
                               : item.Severity === "Warning"
                               ? "orange"
-                              : "inherit", // Pokud není žádná z uvedených podmínek splněna, použije se výchozí barva
+                              : "inherit",
                           fontWeight:
                             item.Severity === "Critical"
                               ? "bold"
                               : item.Severity === "Warning"
-                              ? "500" // Semibold
+                              ? "500"
                               : "normal",
                         }}
                       >
@@ -239,8 +233,7 @@ export const Response = ({ message, status, data, unit, onClick }: any) => {
                   ))}
                 </TableBody>
               </Table>
-            ) : // <p>No data available</p>
-            null}
+            ) : null}
           </div>
         ) : null}
         {data && data["sel"] && data["sel"].length === 0 ? (
