@@ -435,7 +435,7 @@ def get_bmc_bios():
     else:
         remote_path='/mnt/M7_PROD/INI'
         
-    if userInput in ["TX1330M6", "TX1320M6", "TX1310M6", "RX1310M6", "RX1320M6", "RX1330M6"]:
+    if userInput in ["TX1330M6", "TX1320M6", "TX1310M6", "RX1310M6", "RX1320M6", "RX1330M6","RX1440M2"]:
         remote_path = "/mnt/M7_PROD/INI"
         
     if userInput in ["RX2450M2"]:
