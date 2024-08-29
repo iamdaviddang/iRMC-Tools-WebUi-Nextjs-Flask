@@ -529,7 +529,7 @@ def download_log(usn):
     else:
         remote_path='/mnt/M7_PROD/TestLog/'
         
-    if modelgen in ["TX1330M6", "TX1320M6", "TX1310M6", "RX1310M6", "RX1320M6", "RX1330M6","RX2450M2"]:
+    if modelgen in ["TX1330M6", "TX1320M6", "TX1310M6", "RX1310M6", "RX1320M6", "RX1330M6","RX2450M2","RX1440M2"]:
         remote_path = "/mnt/M7_PROD/TestLog/"
         
     if not gen in ["M5", "M6", "M7", "M1", "M4"]:
