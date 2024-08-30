@@ -418,11 +418,13 @@ def get_bmc_bios():
         return jsonify({"message":"ERROR: Missing required data", "status":"bad"})
     
     userInput = user_data['userData']
+    print(userInput)
     
     if userInput.startswith(("EW")):
         return jsonify({"message":f"ERROR: Its USN. Please insert model.", "status":"bad"})
 
     if not userInput.startswith(("RX", "TX", "CX")):
+        print(userInput)
         return jsonify({"message":f"ERROR: Unknown model - {userInput}", "status":"bad"})
     
     if not len(userInput) == 8:
@@ -438,10 +440,10 @@ def get_bmc_bios():
     if userInput in ["TX1330M6", "TX1320M6", "TX1310M6", "RX1310M6", "RX1320M6", "RX1330M6","RX1440M2"]:
         remote_path = "/mnt/M7_PROD/INI"
         
-    if userInput in ["RX2450M2"]:
+    if userInput in ["RX2450M2", "RX1440M2"]:
         remote_path = remote_path = "/mnt/M7_PROD/INI"
         
-    if not rada in ["M5", "M6", "M7", "M1", "M4"]:
+    if not rada in ["M5", "M6", "M7", "M1", "M4","M2"]:
         return jsonify({"message":f"ERROR: Unknown model - {userInput}", "status":"bad"})
     
     smaz_soubory()

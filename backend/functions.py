@@ -436,7 +436,7 @@ def get_BIOS(model, rada):
         file = "fw.toml"
         target = f'[BIOS.{model}]'
         
-    if model == "RX2450M2":
+    if model == "RX2450M2" or model == "RX1440M2":
         file = "fw.toml"
         target = f'[BIOS.{model}]'
         
@@ -478,7 +478,7 @@ def get_BMC(model, rada):
         file = "fw.toml"
         target = f'[BMC.{model}]'
         
-    if model == "RX2450M2":
+    if model == "RX2450M2" or model == "RX1440M2":
         file = "fw.toml"
         target = f'[BMC.{model}]'
         

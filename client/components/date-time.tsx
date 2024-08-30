@@ -29,9 +29,9 @@ const DateTime = () => {
   console.log(d);
   return (
     <div>
-      <p className="font-bold cursor-default text-primary drop-shadow">
+      <h1 className="font-bold cursor-default text-primary drop-shadow">
         {weekday[day_week]} {day_number} {month[month_number]}
-      </p>
+      </h1>
     </div>
   );
 };
