@@ -300,7 +300,7 @@ function ToolsTabs() {
                 <CardTitle>Get Info</CardTitle>
                 <CardDescription>
                   This tool shows you the Model, iRMC IP, iRMC Password, Power
-                  Status, BIOS version, iRMC version and UUID
+                  Status, BIOS version and iRMC version
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-2">
