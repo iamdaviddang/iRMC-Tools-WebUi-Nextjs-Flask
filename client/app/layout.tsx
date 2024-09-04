@@ -19,6 +19,7 @@ import { GoDownload } from "react-icons/go";
 import { IoInformation } from "react-icons/io5";
 import { FaRegFileAlt } from "react-icons/fa";
 import DateTime from "@/components/date-time";
+import { GiPositionMarker } from "react-icons/gi";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -65,7 +66,7 @@ export default function RootLayout({ children }) {
                       className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary"
                       prefetch={false}
                     >
-                      <VscTools className="h-4 w-4" />
+                      <VscTools className="h-4 w-4 text-primary" />
                       <span className="text-xl">iRMC Tools</span>
                     </Link>
                     <Link
@@ -73,7 +74,7 @@ export default function RootLayout({ children }) {
                       className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary"
                       prefetch={false}
                     >
-                      <GoCommandPalette className="h-4 w-4" />
+                      <GoCommandPalette className="h-4 w-4 text-primary" />
                       <span className="text-xl">Commands</span>
                     </Link>
                     <Link
@@ -81,7 +82,7 @@ export default function RootLayout({ children }) {
                       className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary"
                       prefetch={false}
                     >
-                      <HiOutlineCommandLine className="h-4 w-4" />
+                      <HiOutlineCommandLine className="h-4 w-4 text-primary" />
                       <span className="text-xl">IPs</span>
                     </Link>
                     <Link
@@ -89,7 +90,7 @@ export default function RootLayout({ children }) {
                       className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary"
                       prefetch={false}
                     >
-                      <IoInformation className="h-4 w-4" />
+                      <IoInformation className="h-4 w-4 text-primary" />
                       <span className="text-xl">BIOS/IRMC FW</span>
                     </Link>
                     <Link
@@ -97,7 +98,7 @@ export default function RootLayout({ children }) {
                       className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary"
                       prefetch={false}
                     >
-                      <GoDownload className="h-4 w-4" />
+                      <GoDownload className="h-4 w-4 text-primary" />
                       <span className="text-xl">Download LOGs</span>
                     </Link>
                     <Link
@@ -105,15 +106,23 @@ export default function RootLayout({ children }) {
                       className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary"
                       prefetch={false}
                     >
-                      <FaRegFileAlt className="h-4 w-4" />
+                      <FaRegFileAlt className="h-4 w-4 text-primary" />
                       <span className="text-xl">SAR/CPN Check</span>
+                    </Link>
+                    <Link
+                      href="/mo-positions"
+                      className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary"
+                      prefetch={false}
+                    >
+                      <GiPositionMarker className="h-4 w-4 text-primary" />
+                      <span className="text-xl">MO -&gt; Positions</span>
                     </Link>
                     <Link
                       href="/settings"
                       className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary"
                       prefetch={false}
                     >
-                      <CiSettings className="h-4 w-4" />
+                      <CiSettings className="h-4 w-4 text-primary" />
                       <span className="text-xl">Settings</span>
                     </Link>
                   </nav>

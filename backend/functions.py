@@ -781,3 +781,41 @@ def check_flow_on_server(user_input, generation, model):
 
     except Exception as e:
         return f"Connection to FS failed. Contact David! {str(e)}"
+    
+
+def positions(mo):
+    units = []
+    unsorted = {}
+
+    url = "http://172.25.32.4/api/v2/monitor/get-data"
+    response = requests.get(url=url, verify=False)
+    data = response.json()
+
+    
+    for i in data["data"]["units_data"]:
+        units.append(i)
+
+    
+    for i in units:
+        if data["data"]["units_data"][str(i)]["WorkOrder"] == mo:
+            unsorted[i] = {
+                "position": data["data"]["units_data"][str(i)]["position"],
+                "mo": mo
+            }
+
+    
+    def extract_position(item):
+        position = item["position"]
+        line, trolley, slot = map(int, position.split('-'))
+        return line, trolley, slot
+
+    # Seřazení slovníku podle pozice
+    sorted_items = sorted(unsorted.items(), key=lambda x: extract_position(x[1]))
+    
+
+    final_data = []
+    for unit, info in sorted_items:
+        # print(f"{info['mo']} | {unit} | {info['position']}")
+        final_data.append({f"{info['mo']} | {unit} | {info['position']}"})
+        
+    return final_data

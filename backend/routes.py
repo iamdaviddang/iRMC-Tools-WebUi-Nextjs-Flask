@@ -570,3 +570,45 @@ def getLastModified():
         "sar" : check_sar_on_server(mo, generation, model),
         "cpn": check_flow_on_server(mo, generation, model)
     }})
+    
+    
+@app.route('/api/web-tools/mo-positions', methods=['GET'])
+def get_sorted_positions():
+    mo = request.args.get('mo')
+    units = []
+    unsorted = {}
+
+    url = "http://172.25.32.4/api/v2/monitor/get-data"
+    response = requests.get(url=url, verify=False)
+    data = response.json()
+
+    # Načtení všech jednotek
+    for i in data["data"]["units_data"]:
+        units.append(i)
+
+    # Filtr podle MO a vytvoření nesetříděného slovníku
+    for i in units:
+        if data["data"]["units_data"][str(i)]["WorkOrder"] == mo:
+            unsorted[i] = {
+                "position": data["data"]["units_data"][str(i)]["position"],
+                "mo": mo
+            }
+
+    # Funkce pro extrakci pozice
+    def extract_position(item):
+        position = item["position"]
+        line, trolley, slot = map(int, position.split('-'))
+        return line, trolley, slot
+
+    # Seřazení slovníku podle pozice
+    sorted_items = sorted(unsorted.items(), key=lambda x: extract_position(x[1]))
+
+    # Zpracování výstupu ve formátu "mo | unit | position"
+    output = [f"{info['mo']} | {unit} | {info['position']}" for unit, info in sorted_items]
+
+    # Výběr formátu výstupu na základě parametru "format"
+    output_format = request.args.get('format', 'text')
+    if output_format == 'json':
+        return jsonify(output)
+    else:
+        return "\n".join(output)
