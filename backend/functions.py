@@ -652,41 +652,38 @@ def zazipovat_slozku():
 
     return True, zip_cesta
 
-def stahnout_slozku(jmeno_slozky, server=environ.get("SSH_SERVER"), cesta='/mnt/M7_PROD/TestLog/', username=environ.get("SSH_USERNAME"), password=environ.get("SSH_PASSWORD")):
-    # Inicializace SSH klienta
+def stahnout_slozku(jmeno_slozky, cesta='/mnt/M7_PROD/TestLog/'):
+    server = environ.get("SSH_SERVER")
+    username = environ.get("SSH_USERNAME")
+    password = environ.get("SSH_PASSWORD")
+    
     ssh = paramiko.SSHClient()
     ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
     try:
         ssh.connect(server, username=username, password=password)
-        
-        # Zkontrolujeme, zda složka existuje pomocí 'test -d'
         stdin, stdout, stderr = ssh.exec_command(f'test -d {os.path.join(cesta, jmeno_slozky)} && echo "EXISTUJE" || echo "NEEXISTUJE"')
         if stdout.read().decode().strip() != "EXISTUJE":
-            print(f"Složka {jmeno_slozky} neexistuje na serveru.")
             return False
-         
         
-
-        # Získání cesty ke složce 'temp_files'
         aktualni_adresar = os.path.dirname(os.path.abspath(__file__))
         cilova_slozka = os.path.join(aktualni_adresar, 'temp_files')
         
-        # Pokud složka 'temp_files' neexistuje, vytvoříme ji
+        
         if not os.path.exists(cilova_slozka):
             os.makedirs(cilova_slozka)
         else:
-            # Vyprázdnění složky 'temp_files', pokud již existuje
+            
             for filename in os.listdir(cilova_slozka):
                 file_path = os.path.join(cilova_slozka, filename)
                 try:
                     if os.path.isfile(file_path) or os.path.islink(file_path):
-                        os.unlink(file_path)  # Odstraní soubor nebo symbolický odkaz
+                        os.unlink(file_path)  
                     elif os.path.isdir(file_path):
-                        shutil.rmtree(file_path)  # Odstraní složku a její obsah
+                        shutil.rmtree(file_path)  
                 except Exception as e:
                     print(f"Chyba při mazání souboru {file_path}: {e}")
 
-        # Připojíme se pomocí SCP a stáhneme složku do 'temp_files'
+        
         with SCPClient(ssh.get_transport()) as scp:
             scp.get(os.path.join(cesta, jmeno_slozky), local_path=cilova_slozka, recursive=True)
             print(f"Složka {jmeno_slozky} byla úspěšně stažena do {cilova_slozka}.")
