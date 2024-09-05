@@ -9,10 +9,8 @@ import Image from "next/image";
 import { GoCommandPalette } from "react-icons/go";
 import { PiSignOut } from "react-icons/pi";
 import { Toaster } from "@/components/ui/sonner";
-import ReportAlert from "@/components/report-alert";
 import { HiOutlineCommandLine } from "react-icons/hi2";
 import { CiSettings } from "react-icons/ci";
-import { FaInfo } from "react-icons/fa";
 import { ThemeProvider } from "@/components/theme-provider";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { GoDownload } from "react-icons/go";
@@ -190,15 +188,7 @@ export default function RootLayout({ children }) {
                         Commands
                       </Link>
                     </nav>
-                    <div className="mt-auto">
-                      {/* <Card>
-                      <CardHeader>
-                        <CardTitle>Created by David Dang</CardTitle>
-                        <CardDescription></CardDescription>
-                      </CardHeader>
-                      <CardContent></CardContent>
-                    </Card> */}
-                    </div>
+                    <div className="mt-auto"></div>
                   </SheetContent>
                 </Sheet>
                 <div className="w-full h-full flex items-center justify-between gap-3">

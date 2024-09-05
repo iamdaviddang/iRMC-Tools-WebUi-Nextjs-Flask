@@ -1,9 +1,4 @@
-import {
-  areCredentialsStored,
-  clearCredentials,
-  getCredentials,
-  saveCredentials,
-} from "@/localStorage/functions";
+import { areCredentialsStored, getCredentials } from "@/localStorage/functions";
 import React from "react";
 import { MdConnectedTv } from "react-icons/md";
 import { toast } from "sonner";

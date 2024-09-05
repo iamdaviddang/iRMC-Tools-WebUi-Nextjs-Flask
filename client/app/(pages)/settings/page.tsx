@@ -56,11 +56,6 @@ function Page() {
           <Link href="/settings" className="font-semibold text-primary">
             SSH Credentials
           </Link>
-          {/* <Link href="#">Security</Link>
-          <Link href="#">Integrations</Link>
-          <Link href="#">Support</Link>
-          <Link href="#">Organizations</Link>
-          <Link href="#">Advanced</Link> */}
         </nav>
         <div className="grid gap-6">
           <Card x-chunk="dashboard-04-chunk-1">

@@ -55,7 +55,6 @@ const Page = () => {
         }
       } catch (error) {
         console.error("Error fetching data:", error);
-        // Zde můžete přidat nějakou chybovou hlášku pro uživatele
       }
       setLoading(false);
     }

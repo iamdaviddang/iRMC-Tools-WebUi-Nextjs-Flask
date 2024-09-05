@@ -34,7 +34,6 @@ def find_password(ip):
     def get_password(model):
         return pws.get(model, "Password@123")
     
-    # API request pro zjisteni modelu a rady(M5,M6,M7,M2)
     url = f"https://{ip}/redfish/v1"
     auth = ('', '')
     response = requests.get(url, auth=auth, verify=False)
@@ -180,7 +179,6 @@ def get_system_fw_info(irmc, user, password):
     response = session.get(url)
     status_code = response.status_code
     if status_code != 200 and status_code != 202 and status_code != 204:
-        # session.delete("https://{0}{1}".format(irmc, session_info))
         return "The request failed (url: {0}, error: {1})".format(
             url, response.json()['error']['message'])
         
@@ -222,7 +220,6 @@ def get_sdcard_summary(data):
 
   summary = {
     "Id": data.get("Id"),
-    # "Name": data.get("Name"),
     "Status": data.get("Status"),
     "Inserted": data.get("Inserted"),
     "Mounted": data.get("Mounted"),
@@ -300,13 +297,11 @@ import socket
 
 def is_server_reachable(ip_address, port=80):
   try:
-    # Using socket
     s = socket.create_connection((ip_address, port), timeout=5)
     s.close()
     return True
   except (socket.timeout, socket.error):
     try:
-      # Using requests (for HTTP-based checks)
       response = requests.get(f"http://{ip_address}:{port}", timeout=5)
       return response.status_code == 200
     except requests.exceptions.RequestException:
@@ -391,7 +386,6 @@ def change_password(irmc_ip, default_password, new_password="Password@123"):
 def check_api_password(password, ip_address):
     default_passwords = ["Admin-lzH5p5POBYkJ","admin","Password@123","Admin-SguvlCskXm3L","Admin-2rcJuDoEOF/c","Admin-CMKPYp6ekoMs","Admin-Anl6vQ101tbz", "Admin-OFQE/TRz0lNy","Admin-1InmNvDF1ahY","Admin-WUey/ohT/pte","Admin-SguvlCskXm3L","Admin-SkIXNR/TAP9t","Admin-6FLdkraSUuTi","adminADMIN11", "Admin-GOtgGbPE24Lb","Admin-Mc5FyslyQqXd","Admin-w5fT5iyNXfAv"]
     
-    # 1st try normal password
     api_url = f"https://{ip_address}/redfish/v1/Systems/0/Oem/ts_fujitsu/SDCard"
     auth = requests.auth.HTTPBasicAuth("admin", password)
     response = requests.get(api_url, auth=auth, verify=False)
@@ -402,7 +396,6 @@ def check_api_password(password, ip_address):
     else:
         print(f"Password is not: {password}")
     
-    # if normal pw doesnt work then try to change default pw
     if response.status_code != 200:
         for pw in default_passwords:
             if change_password(irmc_ip=ip_address, default_password=pw, new_password=password):
@@ -445,7 +438,7 @@ def get_BIOS(model, rada):
     file_name = najdi_zip_soubor()
     with zipfile.ZipFile(f'temp_files/{file_name}', 'r') as zip_ref:
         with zip_ref.open(f'INI/{file}', 'r') as file:
-            text = file.read().decode('utf-8')  # Dekódování do UTF-8
+            text = file.read().decode('utf-8')
             
             lines = text.split('\n')
             
@@ -508,7 +501,6 @@ def get_BMC(model, rada):
 def delete_file(cesta_k_souboru):
     if os.path.exists(cesta_k_souboru):
         os.remove(cesta_k_souboru)
-        # print(f'Soubor {cesta_k_souboru} byl úspěšně smazán.')
     else:
         print(f'Soubor {cesta_k_souboru} neexistuje.')
         
@@ -563,10 +555,8 @@ def download_zip_files(ssh_client, scp_client, zip_files, remote_path, local_pat
         scp_client.get(remote_file, local_file)
         
 def najdi_zip_soubor():
-    # Získání aktuálního pracovního adresáře
     aktu_adresar = os.getcwd()
 
-    # Sestavení cesty ke složce s ZIP soubory (relativní cesta)
     cesta_ke_soubore = os.path.join(aktu_adresar, "temp_files")
 
     for soubor in os.listdir(cesta_ke_soubore):
@@ -627,23 +617,18 @@ def bios_fw(ip, password):
 
 
 def zazipovat_slozku():
-    # Získání cesty ke složce 'temp_files'
     aktualni_adresar = os.path.dirname(os.path.abspath(__file__))
     cilova_slozka = os.path.join(aktualni_adresar, 'temp_files')
 
-    # Získání seznamu složek v 'temp_files'
     slozky = [d for d in os.listdir(cilova_slozka) if os.path.isdir(os.path.join(cilova_slozka, d))]
     
-    # Ověření, že existuje pouze jedna složka
     if len(slozky) != 1:
         print("Ve složce 'temp_files' není přesně jedna složka, nelze pokračovat.")
         return False
 
-    # Jméno složky a cesta k ní
     jmeno_slozky = slozky[0]
     cesta_slozky = os.path.join(cilova_slozka, jmeno_slozky)
 
-    # Cesta k ZIP souboru (bude uložen ve stejné složce 'temp_files')
     zip_cesta = os.path.join(cilova_slozka, jmeno_slozky)
 
     # Zazipování složky

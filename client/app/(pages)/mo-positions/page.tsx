@@ -66,7 +66,7 @@ export default function Home() {
       if (!response.ok) {
         throw new Error("Failed to fetch data");
       }
-      const result = await response.text(); // or response.json() if expecting JSON
+      const result = await response.text();
       setData(result);
     } catch (err) {
       setError(err.message);

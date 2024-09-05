@@ -71,12 +71,6 @@ const Page = () => {
     <div className="flex flex-col justify-center gap-10 mt-8">
       <div className="flex justify-center ">
         <Tabs defaultValue="Search for FW" className="w-[90%]">
-          {/* <TabsList className="grid w-full grid-cols-1">
-            <TabsTrigger value="Search for FW" className="gap-1">
-              <FaMagnifyingGlass className="h-4 w-4 text-primary" />
-              BIOS/iRMC FW
-            </TabsTrigger>
-          </TabsList> */}
           <TabsContent value="Search for FW" className="gap-1">
             <Card>
               <CardHeader>

@@ -14,9 +14,9 @@ export const rebootApi = async (userInput) => {
     });
 
     const data = await response.json();
-    return data; // Return the parsed JSON response
+    return data;
   } catch (error) {
-    return null; // Or return a specific error object
+    return null;
   }
 };
 

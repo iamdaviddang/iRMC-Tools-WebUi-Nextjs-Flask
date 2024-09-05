@@ -100,7 +100,6 @@ export function SarForm() {
 
   return (
     <div className="flex flex-col">
-      {/* FORM */}
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
@@ -192,7 +191,6 @@ export function SarForm() {
         </form>
       </Form>
 
-      {/* RESPONSE */}
       <div id="response" className="flex flex-col justify-center w-full h-max">
         {loading ? (
           <div className="mx-auto">

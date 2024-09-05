@@ -209,7 +209,6 @@ def getInfo():
     
     try:
         power_status, password, model, uuid = check_power_status(irmc_ip)
-        # task = get_system_fw_info(irmc_ip, "admin", password)
         irmc = irmc_fw(irmc_ip,password)
         bios = bios_fw(irmc_ip,password)
         
@@ -454,7 +453,6 @@ def get_bmc_bios():
     password = environ.get("SSH_PASSWORD")
     local_path = os.path.join(os.getcwd(), "temp_files")
     
-    #download TXT
     ssh_client = create_ssh_client(server, port, user, password)
     scp_client = SCPClient(ssh_client.get_transport())
     
@@ -465,7 +463,6 @@ def get_bmc_bios():
         scp_client.close()
         ssh_client.close()
         
-    #download ZIP
     txt_files_forZIP = [f for f in os.listdir(local_path) if f.endswith('.txt')]
     base_names = [os.path.splitext(txt_file)[0] for txt_file in txt_files_forZIP]
 
@@ -582,11 +579,9 @@ def get_sorted_positions():
     response = requests.get(url=url, verify=False)
     data = response.json()
 
-    # Načtení všech jednotek
     for i in data["data"]["units_data"]:
         units.append(i)
 
-    # Filtr podle MO a vytvoření nesetříděného slovníku
     for i in units:
         if data["data"]["units_data"][str(i)]["WorkOrder"] == mo:
             unsorted[i] = {
@@ -594,19 +589,15 @@ def get_sorted_positions():
                 "mo": mo
             }
 
-    # Funkce pro extrakci pozice
     def extract_position(item):
         position = item["position"]
         line, trolley, slot = map(int, position.split('-'))
         return line, trolley, slot
 
-    # Seřazení slovníku podle pozice
     sorted_items = sorted(unsorted.items(), key=lambda x: extract_position(x[1]))
 
-    # Zpracování výstupu ve formátu "mo | unit | position"
     output = [f"{info['mo']} | {unit} | {info['position']}" for unit, info in sorted_items]
 
-    # Výběr formátu výstupu na základě parametru "format"
     output_format = request.args.get('format', 'text')
     if output_format == 'json':
         return jsonify(output)
