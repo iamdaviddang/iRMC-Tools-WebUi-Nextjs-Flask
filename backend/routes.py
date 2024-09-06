@@ -466,7 +466,7 @@ def download_log(usn):
     if modelgen in ["TX1330M6", "TX1320M6", "TX1310M6", "RX1310M6", "RX1320M6", "RX1330M6","RX2450M2","RX1440M2"]:
         remote_path = "/mnt/M7_PROD/TestLog/"
         
-    if not gen in ["M5", "M6", "M7", "M1", "M4"]:
+    if not gen in ["M5", "M6", "M7", "M1", "M4", "M2"]:
         return jsonify({"message":f"ERROR: Unknown usn - {usn}", "status":"bad"}),404
     
     if stahnout_slozku(usn, cesta=remote_path) == False:
