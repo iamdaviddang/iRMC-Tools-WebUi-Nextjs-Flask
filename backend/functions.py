@@ -5,7 +5,6 @@ import requests
 from bs4 import BeautifulSoup
 import socket
 import json
-from models import Task, db
 import paramiko
 from scp import SCPClient
 import urllib3
