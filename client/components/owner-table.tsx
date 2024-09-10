@@ -96,34 +96,11 @@ const OwnerTable = () => {
         throw new Error("Could not delete owner");
       }
 
-      toast("owner deleted");
+      toast("Owner deleted. Please refresh the page to load new data.");
       location.reload();
+      return true;
     } catch (error) {
       toast("Delete failed:", error);
-    }
-  };
-
-  const addUnitOwner = async (usn, owner) => {
-    try {
-      const response = await fetch(
-        "http://172.25.32.4/api/v2/monitor/add-unit-owner",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ usn: usn, user: owner }),
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error("Could not add owner");
-      }
-
-      toast("add deleted");
-      location.reload();
-    } catch (error) {
-      toast("add failed:", error);
     }
   };
 
@@ -134,10 +111,47 @@ const OwnerTable = () => {
     },
   });
 
-  function onSubmit(data: z.infer<typeof FormSchema>) {
-    console.log(data, oldOwner);
-    removeUnitOwner(usn);
-    addUnitOwner(usn, data.newOwner);
+  async function onSubmit(data: z.infer<typeof FormSchema>) {
+    try {
+      const response = await fetch(
+        "http://172.25.32.4/api/v2/monitor/remove-unit-owner",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ usn }),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Could not delete owner");
+      } else {
+        try {
+          const response = await fetch(
+            "http://172.25.32.4/api/v2/monitor/add-unit-owner",
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({ usn: usn, user: data.newOwner }),
+            }
+          );
+
+          if (!response.ok) {
+            throw new Error("Could not add owner");
+          }
+
+          location.reload();
+          return true;
+        } catch (error) {
+          toast("add failed:", error);
+        }
+      }
+    } catch (error) {
+      toast("Update failed:", error);
+    }
   }
 
   return (
