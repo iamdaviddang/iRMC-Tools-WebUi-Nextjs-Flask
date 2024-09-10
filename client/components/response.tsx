@@ -59,12 +59,12 @@ export const Response = ({ message, status, data, unit, onClick }: any) => {
             <p>
               BIOS: <strong>{data["unit"]["BIOS"]}</strong>
             </p>
-            {data["unit"]["Recovery-BIOS"] ||
-            data["unit"]["Recovery-BIOS"] == "" ? null : (
+            {data["unit"]["Recovery-BIOS"] &&
+            data["unit"]["Recovery-BIOS"] != "" ? (
               <p className="text-sm">
                 Recovery-BIOS: {data["unit"]["Recovery-BIOS"]}
               </p>
-            )}
+            ) : null}
             <Separator />
             <p>
               iRMC: <strong>{data["unit"]["iRMC"]}</strong>
@@ -79,7 +79,7 @@ export const Response = ({ message, status, data, unit, onClick }: any) => {
                 {data["unit"]["irmc_high_state"]}
               </p>
 
-              {data["unit"]["irmc_golden_fw"] ||
+              {data["unit"]["irmc_golden_fw"] &&
               data["unit"]["irmc_golden_fw"] != "" ? (
                 <p>
                   Golden image: {data["unit"]["irmc_golden_fw"]} -{" "}

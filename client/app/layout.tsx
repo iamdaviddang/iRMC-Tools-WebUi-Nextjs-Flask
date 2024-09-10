@@ -17,7 +17,9 @@ import { GoDownload } from "react-icons/go";
 import { IoInformation } from "react-icons/io5";
 import { FaRegFileAlt } from "react-icons/fa";
 import DateTime from "@/components/date-time";
-import { GiPositionMarker } from "react-icons/gi";
+import { GoPerson } from "react-icons/go";
+import { CiLocationOn } from "react-icons/ci";
+import { BsFiletypeTxt } from "react-icons/bs";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -104,7 +106,7 @@ export default function RootLayout({ children }) {
                       className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary"
                       prefetch={false}
                     >
-                      <FaRegFileAlt className="h-4 w-4 text-primary" />
+                      <BsFiletypeTxt className="h-4 w-4 text-primary" />
                       <span className="text-xl">SAR/CPN Check</span>
                     </Link>
                     <Link
@@ -112,8 +114,16 @@ export default function RootLayout({ children }) {
                       className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary"
                       prefetch={false}
                     >
-                      <GiPositionMarker className="h-4 w-4 text-primary" />
+                      <CiLocationOn className="h-4 w-4 text-primary" />
                       <span className="text-xl">MO -&gt; Positions</span>
+                    </Link>
+                    <Link
+                      href="/unit-owners"
+                      className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary"
+                      prefetch={false}
+                    >
+                      <GoPerson className="h-4 w-4 text-primary" />
+                      <span className="text-xl">Unit owners</span>
                     </Link>
                     <Link
                       href="/settings"
