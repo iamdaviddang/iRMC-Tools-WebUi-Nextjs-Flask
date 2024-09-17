@@ -87,9 +87,6 @@ def powerOff():
         task = powerOff_system(irmc_ip)
         if task.startswith("ERROR"):
             return jsonify({"message":task,"status":"bad"})
-        new_task = Task(usn=userInput, type_of_task="Power Off", status="ok")
-        db.session.add(new_task)
-        db.session.commit()
         return jsonify({f"message":task,"status":"ok","request-for":userInput,})
     except:
         return jsonify({"message":"ERROR: Something went wrong. Please check it manually.", "status":"bad"})
@@ -132,9 +129,6 @@ def clearSEL():
         task = clear_sel(irmc_ip, password)
         if task.startswith("ERROR"):
             return jsonify({"message":task,"status":"bad"})
-        new_task = Task(usn=userInput, type_of_task="Clear SEL", status="ok")
-        db.session.add(new_task)
-        db.session.commit()
         return jsonify({f"message":task,"status":"ok","request-for":userInput,})
     except:
         return jsonify({"message":"ERROR: Something went wrong. Please check it manually.", "status":"bad"})
@@ -201,38 +195,6 @@ def getInfo():
     except:
         return jsonify({"message":"ERROR! Can not load data. Please check it manually.", "status":"bad"})
 
-@app.route('/tasks', methods=['POST'])
-def add_task():
-    data = request.get_json()
-    new_task = Task(usn=data['usn'], type_of_task=data['type_of_task'], status=data['status'])
-    db.session.add(new_task)
-    db.session.commit()
-    return jsonify({'message': 'Task created successfully'}), 201
-
-@app.route('/tasks', methods=['GET'])
-def get_tasks():
-    tasks = Task.query.all()
-    tasks_list = [{'id': task.id, 'usn': task.usn, 'type_of_task': task.type_of_task, 'status': task.status} for task in tasks]
-    return jsonify(tasks_list)
-
-@app.route('/tasks/<int:id>', methods=['DELETE'])
-def delete_task(id):
-    task = Task.query.get(id)
-    if task is None:
-        return jsonify({'message': 'Task not found'}), 404
-    db.session.delete(task)
-    db.session.commit()
-    return jsonify({'message': 'Task deleted successfully'}), 200
-
-@app.route('/tasks', methods=['DELETE'])
-def delete_all_tasks():
-    tasks = Task.query.all()
-    if not tasks:
-        return jsonify({'message': 'No tasks to delete'}), 404
-    for task in tasks:
-        db.session.delete(task)
-    db.session.commit()
-    return jsonify({'message': 'All tasks deleted successfully'}), 200
 
 @app.route("/api/web-tools/sd-card-check/", methods=["POST"])
 def sdCardCheck():
