@@ -7,6 +7,7 @@ import socket
 import json
 import paramiko
 from scp import SCPClient
+import time
 import urllib3
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
@@ -800,3 +801,52 @@ def positions(mo):
         final_data.append({f"{info['mo']} | {unit} | {info['position']}"})
         
     return final_data
+
+def get_os_ip(usn):
+    try:
+        url = "http://172.25.32.4/api/v2/monitor/get-data"
+        response = requests.get(url=url, verify=False)
+        data = response.json()
+        os_ip= data["data"]["units_data"][usn]["EthernetIP"]
+        return os_ip
+    except:
+        return ""
+    
+def check_ssh_availability(hostname):
+    port=22
+    username='root'
+    password='rootroot'
+    try:
+        client = paramiko.SSHClient()
+        client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        client.connect(hostname=hostname, port=port, username=username, password=password)
+        return True
+    except Exception as e:
+        print(f"Chyba při připojení: {str(e)}")
+        return False
+    
+def check_irmc_availability(hostname):
+    try:
+        url = f"http://{hostname}/redfish/v1"
+        response = requests.get(url=url, verify=False)
+        if response.status_code == 200:
+            return True
+        else:
+            return False
+    except:
+        return False
+    
+
+def execute_ssh_command(ssh, command):
+    stdin, stdout, stderr = ssh.exec_command(command)
+    
+    # Počkej na dokončení příkazu
+    stdout.channel.recv_exit_status()  # Wait for command to finish
+    
+    # Získání návratového kódu (return code)
+    return_code = stdout.channel.recv_exit_status()
+
+    output = stdout.read().decode()
+    errors = stderr.read().decode()
+
+    return output, errors, return_code

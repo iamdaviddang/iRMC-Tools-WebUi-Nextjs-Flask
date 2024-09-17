@@ -20,6 +20,7 @@ import {
 } from "@/components/ui/tooltip";
 
 export const Response = ({ message, status, data, unit, onClick }: any) => {
+  console.log(data);
   const clear = () => {
     const clickData = { usn: unit };
     onClick(clickData);
@@ -265,6 +266,32 @@ export const Response = ({ message, status, data, unit, onClick }: any) => {
                 CPN last change: <strong>{data["cpn"]}</strong>
               </p>
             ) : null}
+          </div>
+        ) : null}
+        {data && data["reset-response"] ? (
+          <div className="text-black mt-4">
+            <h2 className="text-2xl">Commands used</h2>
+            <ul className="flex flex-col gap-3 mt-2">
+              {Object.entries(data["reset-response"]).map(
+                ([key, value]: any) => (
+                  <li key={key}>
+                    <div className="flex flex-col">
+                      <strong>{key}</strong>
+                      <p
+                        className={
+                          value === 0
+                            ? "text-green-500 font-bold"
+                            : "text-red-500 font-semibold"
+                        }
+                      >
+                        Return code: {value}
+                      </p>
+                      <Separator />
+                    </div>
+                  </li>
+                )
+              )}
+            </ul>
           </div>
         ) : null}
       </Alert>

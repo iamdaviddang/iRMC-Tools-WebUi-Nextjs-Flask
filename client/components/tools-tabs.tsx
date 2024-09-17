@@ -18,6 +18,7 @@ import {
   getSdCardCheckApi,
   powerOffApi,
   rebootApi,
+  resetBMCApi,
   showSelApi,
 } from "../actions/API_requests";
 import { Response } from "./response";
@@ -29,6 +30,7 @@ import { FaMagnifyingGlass } from "react-icons/fa6";
 import { MdDelete } from "react-icons/md";
 import { FaPowerOff } from "react-icons/fa";
 import { toast } from "sonner";
+import { MdOutlineRestore } from "react-icons/md";
 
 function ToolsTabs() {
   const [userInput, setUserInput] = useState("");
@@ -78,6 +80,26 @@ function ToolsTabs() {
         setMessage(data["message"]);
         setStatus(data["status"]);
         setUnit(data["request-for"]);
+        setUserInput("");
+      }
+    }
+  };
+
+  const resetBMCButtonClick = async () => {
+    setShowResponse(false);
+    if (userInput.trim() === "") {
+      toast("ERROR - You have to enter some USN or iRMC IP!");
+      setShowResponse(false);
+    } else {
+      setLoading(true);
+      const data = await resetBMCApi(userInput);
+      setLoading(false);
+      if (data) {
+        setUnitData(null);
+        setShowResponse(true);
+        setMessage(data["message"]);
+        setStatus(data["status"]);
+        setUnitData(data["data"]);
         setUserInput("");
       }
     }
@@ -191,7 +213,7 @@ function ToolsTabs() {
         setUnitData(null);
         setMessage(data["message"]);
         setStatus(data["status"]);
-        setUnitData(data["data"]);
+        setUnitData(data["reset-response"]);
         setUnit(data["request-for"]);
         setUserInput("");
         setShowResponse(true);
@@ -203,13 +225,13 @@ function ToolsTabs() {
     <div className="flex flex-col justify-center gap-10 mt-8">
       <div className="flex justify-center ">
         <Tabs defaultValue="Get Info" className="w-[90%]">
-          <TabsList className="grid w-full grid-cols-6">
+          <TabsList className="grid w-full grid-cols-7">
             <TabsTrigger
               onClick={clearValues}
               value="Reboot/PowerON"
               className="gap-1"
             >
-              <MdOutlineRestartAlt className="h-4 w-4 text-primary" />
+              <MdOutlineRestartAlt className="h-5 w-5 text-primary" />
               Reboot/PowerON
             </TabsTrigger>
             <TabsTrigger
@@ -251,6 +273,14 @@ function ToolsTabs() {
             >
               <FaPowerOff className="h-4 w-4 text-primary" />
               Power Off
+            </TabsTrigger>
+            <TabsTrigger
+              onClick={clearValues}
+              value="Reset BMC"
+              className="gap-1"
+            >
+              <MdOutlineRestore className="h-5 w-5 text-primary font-bold" />
+              Reset BMC
             </TabsTrigger>
           </TabsList>
           <TabsContent
@@ -459,6 +489,42 @@ function ToolsTabs() {
               </CardContent>
               <CardFooter className="flex-col gap-5">
                 <Button onClick={powerOffButtonClick}>Send request</Button>
+                {loading ? <MyLoading /> : null}
+                {showResponse ? (
+                  <div className="flex flex-col justify-center items-center">
+                    <Response
+                      message={message}
+                      status={status}
+                      data={unitData}
+                      unit={unit}
+                    />
+                  </div>
+                ) : null}
+              </CardFooter>
+            </Card>
+          </TabsContent>
+          <TabsContent value="Reset BMC">
+            <Card>
+              <CardHeader>
+                <CardTitle>Reset BMC</CardTitle>
+                <CardDescription>
+                  This tool will automatically restore BMC to default.
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-2">
+                <div className="space-y-1">
+                  <Label htmlFor="Power Off">USN / OS IP</Label>
+                  <Input
+                    required
+                    type="text"
+                    value={userInput}
+                    onChange={handleInputChange}
+                    placeholder="EWCD004819 or 172.25.132.27"
+                  />
+                </div>
+              </CardContent>
+              <CardFooter className="flex-col gap-5">
+                <Button onClick={resetBMCButtonClick}>Send request</Button>
                 {loading ? <MyLoading /> : null}
                 {showResponse ? (
                   <div className="flex flex-col justify-center items-center">

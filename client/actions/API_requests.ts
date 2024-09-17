@@ -173,3 +173,26 @@ export const getFwApi = async (userInput) => {
     return null;
   }
 };
+
+export const resetBMCApi = async (userInput) => {
+  const url = "http://10.82.66.179:5050/api/web-tools/reset-irmc/";
+  const userData = {
+    userData: userInput.toString(2),
+  };
+
+  try {
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(userData),
+    });
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.log("Fetch data failed");
+    return null;
+  }
+};

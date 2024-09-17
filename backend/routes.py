@@ -538,3 +538,89 @@ def get_sorted_positions():
         return jsonify(output)
     else:
         return "\n".join(output)
+    
+@app.route("/api/web-tools/reset-irmc/", methods=["POST"])
+def reset_irmc():
+    user_data = request.get_json()
+    
+    if not user_data or 'userData' not in user_data:
+        return jsonify({"message":"ERROR: Missing required data", "status":"bad", "data":{"reset-response": ""}})
+    
+    os_ip = ""
+    userInput = user_data['userData']
+    if userInput.startswith("172"):
+        os_ip = userInput
+    else:
+        os_ip = get_os_ip(userInput)
+        if os_ip == "":
+            return jsonify({"message":"ERROR: Tool could not find OS IP for this USN.", "status":"bad", "data":{"reset-response": ""}})
+        
+    if check_irmc_availability(os_ip):
+        return jsonify({"message":"ERROR: This is iRMC IP! Not OS IP! Please enter correct OS IP!", "status":"bad", "data":{"reset-response": ""}})
+    
+    if not check_ssh_availability(os_ip):
+        return jsonify({"message":f"ERROR: OS IP '{os_ip}' has been loaded but IP is not responding...", "status":"bad", "data":{"reset-response": ""}})
+    
+    command_return_code = {}
+    
+    # SSH připojení
+    ssh = paramiko.SSHClient()
+    ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+    
+    try:
+        ssh.connect(os_ip, username='root', password='rootroot')
+
+        # 1. Vytvoření složky temp
+        print("Creating 'temp' directory...")
+        execute_ssh_command(ssh, "mkdir -p /root/temp")
+
+        # 2. Kopírování ZIP souboru do temp
+        print("Copying ZIP file to temp...")
+        execute_ssh_command(ssh, "cp /mnt/Data/Tools/Tools_v1.22.zip /root/temp/")
+
+        # 3. Rozbalení ZIP souboru
+        print("Unzipping file...")
+        execute_ssh_command(ssh, "unzip /root/temp/Tools_v1.22.zip -d /root/temp/")
+
+        # 4. Nastavení práv pro složku Tools
+        print("Setting permissions...")
+        execute_ssh_command(ssh, "chmod -R 777 /root/temp/Tools")
+
+        # 5. Spuštění příkazů ve složce Tools
+        print("Running commands...")
+        commands = [
+            "echo KrResetToDefault=2 > /root/temp/Tools/i.ini",
+            "./IPMIVIEW64 ini=/root/temp/Tools/i.ini",
+            "ipmitool user set password 2 Password@123"
+        ]
+        
+        for command in commands:
+            print(f"Executing: {command}")
+            output, errors, return_code = execute_ssh_command(ssh, f"cd /root/temp/Tools && {command}")
+            print(f"Output: {output}")
+            if errors:
+                print(f"Errors: {errors}")
+                
+            if not return_code == 0:
+                return jsonify({
+                    "status": "bad",
+                    "data":{"reset-response": command_return_code},
+                    "message":"iRMC has not been successfully restored to default."
+                })
+            
+            # Vypsání návratového kódu
+            print(f"Return code: {return_code}")
+            command_return_code[command] = return_code
+
+            # Pauza mezi příkazy
+            time.sleep(1)  
+
+    finally:
+        ssh.close()
+        return jsonify({
+        "status": "ok",
+        "data":{"reset-response": command_return_code},
+        "message":"iRMC has been successfully restored to default."
+    })
+    
+    
