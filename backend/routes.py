@@ -50,9 +50,6 @@ def rebootOrPowerOn():
         req = reboot_system(irmc_ip)
         if req.startswith("ERROR"):
             return jsonify({"message":req,"status":"bad"})
-        new_task = Task(usn=userInput, type_of_task="Reboot/PowerON", status="ok")
-        db.session.add(new_task)
-        db.session.commit()
         return jsonify({f"message":req,"status":"ok","request-for":userInput,})
     except:
         return jsonify({"message":"ERROR: Something went wrong. Please check it manually.", "status":"bad"})
