@@ -4,6 +4,7 @@ from flask import Flask, jsonify, request, send_file, send_from_directory
 from flask_cors import CORS
 from functions import *
 from app import app
+from datetime import datetime
 CORS(app)
 
 
@@ -582,4 +583,17 @@ def reset_irmc():
         "message":"iRMC has been successfully restored to default."
     })
     
-    
+
+@app.route('/api/web-tools/current-date', methods=["GET"])
+def get_current_date():
+    now = datetime.now()
+    day_name = now.strftime("%A")
+
+    data = {
+        "day-word": day_name,
+        "day-number": now.day,
+        "month": now.strftime("%B"),
+        "year": now.year
+    }
+
+    return jsonify(data)

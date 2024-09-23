@@ -141,10 +141,10 @@ export default function RootLayout({ children }) {
                     className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary text-red-600"
                     prefetch={false}
                   >
-                    <PiSignOut className="h-4 w-4" />
-                    <span className="text-xl font-semibold">
+                    <Button variant="destructive" className="flex gap-2">
+                      <PiSignOut className="h-4 w-4" />
                       Go back to monitor
-                    </span>
+                    </Button>
                   </Link>
                 </div>
               </div>
