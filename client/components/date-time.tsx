@@ -7,7 +7,7 @@ function DateTime() {
   useEffect(() => {
     const fetchData = async () => {
       const response = await fetch(
-        "http://127.0.0.1:5051/api/web-tools/current-date"
+        "http://10.82.66.179:5050/api/web-tools/current-date"
       );
       const json = await response.json();
       setData(json);
